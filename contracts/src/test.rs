@@ -287,6 +287,17 @@ fn test_unpause_allows_operations() {
         ctx.client
             .create_stream(&sender, &receiver, &ctx.token_id, &1000, &0, &100, &1000);
 
+    ctx.env.ledger().set(soroban_sdk::testutils::LedgerInfo {
+        timestamp: 500,
+        protocol_version: 22,
+        sequence_number: 1,
+        network_id: [0u8; 32],
+        base_reserve: 0,
+        min_temp_entry_ttl: 0,
+        min_persistent_entry_ttl: 0,
+        max_entry_ttl: 1000000,
+    });
+
     assert_eq!(stream_id, 1);
     let withdrawn = ctx.client.withdraw(&stream_id, &receiver);
     assert_eq!(withdrawn, 500);
