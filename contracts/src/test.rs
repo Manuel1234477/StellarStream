@@ -46,6 +46,7 @@ fn test_full_stream_cycle() {
 
     let amount = 100_i128;
     let start_time = 1000;
+    let cliff_time = 1025;
     let end_time = 1100;
 
     ctx.token.mint(&sender, &amount);
@@ -56,6 +57,7 @@ fn test_full_stream_cycle() {
         &ctx.token_id,
         &amount,
         &start_time,
+        &cliff_time,
         &end_time,
     );
 
@@ -87,9 +89,9 @@ fn test_unauthorized_withdrawal() {
     let thief = Address::generate(&ctx.env);
 
     ctx.token.mint(&sender, &100);
-    let stream_id = ctx
-        .client
-        .create_stream(&sender, &receiver, &ctx.token_id, &100, &0, &100);
+    let stream_id =
+        ctx.client
+            .create_stream(&sender, &receiver, &ctx.token_id, &100, &0, &50, &100);
 
     ctx.client.withdraw(&stream_id, &thief);
 }
@@ -102,9 +104,9 @@ fn test_cancellation_split() {
     let amount = 1000_i128;
 
     ctx.token.mint(&sender, &amount);
-    let stream_id = ctx
-        .client
-        .create_stream(&sender, &receiver, &ctx.token_id, &amount, &0, &1000);
+    let stream_id =
+        ctx.client
+            .create_stream(&sender, &receiver, &ctx.token_id, &amount, &0, &100, &1000);
 
     // Jump to 25% (250 seconds in)
     ctx.env.ledger().set(soroban_sdk::testutils::LedgerInfo {
@@ -156,6 +158,41 @@ fn test_pause_blocks_withdraw() {
         .create_stream(&sender, &receiver, &ctx.token_id, &1000, &0, &1000);
 
     ctx.client.set_pause(&admin, &true);
+#[should_panic(expected = "No funds available to withdraw at this time")]
+fn test_cliff_blocks_withdrawal() {
+    let ctx = setup_test();
+    let sender = Address::generate(&ctx.env);
+    let receiver = Address::generate(&ctx.env);
+
+    ctx.token.mint(&sender, &1000);
+    let stream_id =
+        ctx.client
+            .create_stream(&sender, &receiver, &ctx.token_id, &1000, &0, &500, &1000);
+
+    ctx.env.ledger().set(soroban_sdk::testutils::LedgerInfo {
+        timestamp: 250,
+        protocol_version: 22,
+        sequence_number: 1,
+        network_id: [0u8; 32],
+        base_reserve: 0,
+        min_temp_entry_ttl: 0,
+        min_persistent_entry_ttl: 0,
+        max_entry_ttl: 1000000,
+    });
+
+    ctx.client.withdraw(&stream_id, &receiver);
+}
+
+#[test]
+fn test_cliff_unlocks_at_cliff_time() {
+    let ctx = setup_test();
+    let sender = Address::generate(&ctx.env);
+    let receiver = Address::generate(&ctx.env);
+
+    ctx.token.mint(&sender, &1000);
+    let stream_id =
+        ctx.client
+            .create_stream(&sender, &receiver, &ctx.token_id, &1000, &0, &500, &1000);
 
     ctx.env.ledger().set(soroban_sdk::testutils::LedgerInfo {
         timestamp: 500,
@@ -188,4 +225,18 @@ fn test_unpause_allows_operations() {
         .create_stream(&sender, &receiver, &ctx.token_id, &1000, &0, &1000);
 
     assert_eq!(stream_id, 1);
+    let withdrawn = ctx.client.withdraw(&stream_id, &receiver);
+    assert_eq!(withdrawn, 500);
+}
+
+#[test]
+#[should_panic(expected = "Cliff time must be between start and end time")]
+fn test_invalid_cliff_time() {
+    let ctx = setup_test();
+    let sender = Address::generate(&ctx.env);
+    let receiver = Address::generate(&ctx.env);
+
+    ctx.token.mint(&sender, &1000);
+    ctx.client
+        .create_stream(&sender, &receiver, &ctx.token_id, &1000, &100, &50, &200);
 }
