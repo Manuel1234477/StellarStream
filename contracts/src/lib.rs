@@ -32,7 +32,11 @@ impl StellarStream {
     }
 
     fn check_not_paused(env: &Env) {
-        let is_paused: bool = env.storage().instance().get(&DataKey::IsPaused).unwrap_or(false);
+        let is_paused: bool = env
+            .storage()
+            .instance()
+            .get(&DataKey::IsPaused)
+            .unwrap_or(false);
         if is_paused {
             panic!("Contract is paused");
         }
