@@ -77,6 +77,30 @@ impl StellarStream {
         }
     }
 
+    pub fn decommission(env: Env, admin: Address) {
+        admin.require_auth();
+        let stored_admin: Address = env
+            .storage()
+            .instance()
+            .get(&DataKey::Admin)
+            .expect("Admin not set");
+        if admin != stored_admin {
+            panic!("Unauthorized: Only admin can decommission");
+        }
+        env.storage().instance().set(&DataKey::IsDecommissioned, &true);
+    }
+
+    fn check_not_decommissioned(env: &Env) {
+        let is_decommissioned: bool = env
+            .storage()
+            .instance()
+            .get(&DataKey::IsDecommissioned)
+            .unwrap_or(false);
+        if is_decommissioned {
+            panic!("Contract is decommissioned");
+        }
+    }
+
     #[allow(clippy::too_many_arguments)]
     pub fn create_stream(
         env: Env,
@@ -91,6 +115,7 @@ impl StellarStream {
         vault_address: Option<Address>,
     ) -> u64 {
         Self::check_not_paused(&env);
+        Self::check_not_decommissioned(&env);
         sender.require_auth();
 
         if end_time <= start_time {
@@ -173,6 +198,8 @@ impl StellarStream {
         token: Address,
         requests: Vec<StreamRequest>,
     ) -> Vec<u64> {
+        Self::check_not_paused(&env);
+        Self::check_not_decommissioned(&env);
         sender.require_auth();
 
         let mut total_amount: i128 = 0;
@@ -260,13 +287,23 @@ impl StellarStream {
         }
 
         let now = env.ledger().timestamp();
-        let total_unlocked = math::calculate_unlocked(
-            stream.amount,
-            stream.start_time,
-            stream.cliff_time,
-            stream.end_time,
-            now,
-        );
+        let is_decommissioned: bool = env
+            .storage()
+            .instance()
+            .get(&DataKey::IsDecommissioned)
+            .unwrap_or(false);
+
+        let total_unlocked = if is_decommissioned {
+            stream.amount
+        } else {
+            math::calculate_unlocked(
+                stream.amount,
+                stream.start_time,
+                stream.cliff_time,
+                stream.end_time,
+                now,
+            )
+        };
 
         let withdrawable_principal = total_unlocked - stream.withdrawn_amount;
 
@@ -375,19 +412,27 @@ impl StellarStream {
         stream.sender.require_auth();
 
         let now = env.ledger().timestamp();
+        let is_decommissioned: bool = env
+            .storage()
+            .instance()
+            .get(&DataKey::IsDecommissioned)
+            .unwrap_or(false);
 
-        if now >= stream.end_time {
+        if !is_decommissioned && now >= stream.end_time {
             panic!("Stream has already completed and cannot be cancelled");
         }
 
-        let total_unlocked = math::calculate_unlocked(
-            stream.amount,
-            stream.start_time,
-            stream.cliff_time,
-            stream.end_time,
-            now,
-        );
-
+        let total_unlocked = if is_decommissioned {
+            stream.amount
+        } else {
+            math::calculate_unlocked(
+                stream.amount,
+                stream.start_time,
+                stream.cliff_time,
+                stream.end_time,
+                now,
+            )
+        };
         let withdrawable_to_receiver = total_unlocked - stream.withdrawn_amount;
         let refund_to_sender = stream.amount - total_unlocked;
 

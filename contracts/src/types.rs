@@ -59,4 +59,5 @@ pub enum DataKey {
     Treasury,
     IsPaused,
     ReentrancyLock,
+    IsDecommissioned,
 }
