@@ -279,8 +279,8 @@ impl StellarStream {
 
         env.events()
             .publish((symbol_short!("transfer"), stream_id), new_receiver);
+    }
 
-}
     pub fn extend_stream_ttl(env: Env, stream_id: u64) {
         let stream_key = DataKey::Stream(stream_id);
         env.storage()
