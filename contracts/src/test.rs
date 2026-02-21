@@ -262,7 +262,6 @@ fn test_cliff_blocks_withdrawal() {
             .create_stream(&sender, &old_receiver, &ctx.token_id, &1000, &0, &1000);
 
     ctx.client.transfer_receiver(&stream_id, &new_receiver);
-            .create_stream(&sender, &receiver, &ctx.token_id, &1000, &0, &500, &1000);
 
     ctx.env.ledger().set(soroban_sdk::testutils::LedgerInfo {
         timestamp: 250,
