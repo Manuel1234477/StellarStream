@@ -1,6 +1,13 @@
 use soroban_sdk::{contracttype, Address, Vec};
 
 #[contracttype]
+#[derive(Clone, PartialEq)]
+pub enum CurveType {
+    Linear = 0,
+    Exponential = 1,
+}
+
+#[contracttype]
 #[derive(Clone)]
 pub struct Milestone {
     pub timestamp: u64,
@@ -23,6 +30,7 @@ pub struct Stream {
     pub paused_time: u64,
     pub total_paused_duration: u64,
     pub milestones: Vec<Milestone>,
+    pub curve_type: CurveType,
 }
 
 #[contracttype]

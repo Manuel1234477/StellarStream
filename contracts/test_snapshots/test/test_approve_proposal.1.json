@@ -444,6 +444,14 @@
                             },
                             {
                               "key": {
+                                "symbol": "curve_type"
+                              },
+                              "val": {
+                                "u32": 0
+                              }
+                            },
+                            {
+                              "key": {
                                 "symbol": "end_time"
                               },
                               "val": {

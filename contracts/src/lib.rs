@@ -2,13 +2,14 @@
 #![allow(clippy::too_many_arguments)]
 
 mod errors;
+mod math;
 mod storage;
 mod types;
 
 use errors::Error;
 use soroban_sdk::{contract, contractimpl, token, Address, Env, Vec};
 use storage::{PROPOSAL_COUNT, RECEIPT, STREAM_COUNT};
-use types::{Milestone, ReceiptMetadata, Stream, StreamProposal, StreamReceipt};
+use types::{CurveType, Milestone, ReceiptMetadata, Stream, StreamProposal, StreamReceipt};
 
 #[contract]
 pub struct StellarStreamContract;
@@ -127,6 +128,7 @@ impl StellarStreamContract {
             paused_time: 0,
             total_paused_duration: 0,
             milestones: Vec::new(&env),
+            curve_type: CurveType::Linear,
         };
 
         env.storage()
@@ -147,6 +149,7 @@ impl StellarStreamContract {
         total_amount: i128,
         start_time: u64,
         end_time: u64,
+        curve_type: CurveType,
     ) -> Result<u64, Error> {
         let milestones = Vec::new(&env);
         Self::create_stream_with_milestones(
@@ -158,6 +161,7 @@ impl StellarStreamContract {
             start_time,
             end_time,
             milestones,
+            curve_type,
         )
     }
 
@@ -170,6 +174,7 @@ impl StellarStreamContract {
         start_time: u64,
         end_time: u64,
         milestones: Vec<Milestone>,
+        curve_type: CurveType,
     ) -> Result<u64, Error> {
         sender.require_auth();
 
@@ -200,6 +205,7 @@ impl StellarStreamContract {
             paused_time: 0,
             total_paused_duration: 0,
             milestones,
+            curve_type,
         };
 
         env.storage()
@@ -476,10 +482,27 @@ impl StellarStreamContract {
         }
 
         let duration = (stream.end_time - stream.start_time) as i128;
-        let linear_unlocked = (stream.total_amount * effective_elapsed) / duration;
+
+        // Calculate base unlocked amount based on curve type
+        let base_unlocked = match stream.curve_type {
+            CurveType::Linear => (stream.total_amount * effective_elapsed) / duration,
+            CurveType::Exponential => {
+                // Use exponential curve with overflow protection
+                let adjusted_start = stream.start_time;
+                let adjusted_current = stream.start_time + effective_elapsed as u64;
+
+                math::calculate_exponential_unlocked(
+                    stream.total_amount,
+                    adjusted_start,
+                    stream.end_time,
+                    adjusted_current,
+                )
+                .unwrap_or((stream.total_amount * effective_elapsed) / duration)
+            }
+        };
 
         if stream.milestones.is_empty() {
-            return linear_unlocked;
+            return base_unlocked;
         }
 
         let mut milestone_cap = 0i128;
@@ -492,8 +515,8 @@ impl StellarStreamContract {
             }
         }
 
-        if linear_unlocked < milestone_cap {
-            linear_unlocked
+        if base_unlocked < milestone_cap {
+            base_unlocked
         } else {
             milestone_cap
         }
@@ -684,7 +707,15 @@ mod test {
         let token_admin_client = StellarAssetClient::new(&env, &token_id);
         token_admin_client.mint(&sender, &10000);
 
-        let stream_id = client.create_stream(&sender, &receiver, &token_id, &1000, &100, &200);
+        let stream_id = client.create_stream(
+            &sender,
+            &receiver,
+            &token_id,
+            &1000,
+            &100,
+            &200,
+            &CurveType::Linear,
+        );
 
         assert_eq!(stream_id, 0);
 
@@ -715,7 +746,15 @@ mod test {
         let token_admin_client = StellarAssetClient::new(&env, &token_id);
         token_admin_client.mint(&sender, &10000);
 
-        let stream_id = client.create_stream(&sender, &receiver, &token_id, &1000, &100, &200);
+        let stream_id = client.create_stream(
+            &sender,
+            &receiver,
+            &token_id,
+            &1000,
+            &100,
+            &200,
+            &CurveType::Linear,
+        );
 
         client.transfer_receipt(&stream_id, &receiver, &new_owner);
 
@@ -744,7 +783,15 @@ mod test {
         let token_admin_client = StellarAssetClient::new(&env, &token_id);
         token_admin_client.mint(&sender, &10000);
 
-        let stream_id = client.create_stream(&sender, &receiver, &token_id, &1000, &100, &200);
+        let stream_id = client.create_stream(
+            &sender,
+            &receiver,
+            &token_id,
+            &1000,
+            &100,
+            &200,
+            &CurveType::Linear,
+        );
 
         client.transfer_receipt(&stream_id, &receiver, &new_owner);
 
@@ -772,7 +819,15 @@ mod test {
         let token_admin_client = StellarAssetClient::new(&env, &token_id);
         token_admin_client.mint(&sender, &10000);
 
-        let stream_id = client.create_stream(&sender, &receiver, &token_id, &1000, &100, &200);
+        let stream_id = client.create_stream(
+            &sender,
+            &receiver,
+            &token_id,
+            &1000,
+            &100,
+            &200,
+            &CurveType::Linear,
+        );
 
         let metadata = client.get_receipt_metadata(&stream_id);
         assert_eq!(metadata.stream_id, stream_id);
@@ -866,7 +921,15 @@ mod test {
         let token_admin_client = StellarAssetClient::new(&env, &token_id);
         token_admin_client.mint(&sender, &10000);
 
-        let stream_id = client.create_stream(&sender, &receiver, &token_id, &1000, &100, &300);
+        let stream_id = client.create_stream(
+            &sender,
+            &receiver,
+            &token_id,
+            &1000,
+            &100,
+            &300,
+            &CurveType::Linear,
+        );
 
         env.ledger().with_mut(|li| li.timestamp = 150);
         client.pause_stream(&stream_id, &sender);
@@ -900,7 +963,15 @@ mod test {
         let token_admin_client = StellarAssetClient::new(&env, &token_id);
         token_admin_client.mint(&sender, &10000);
 
-        let stream_id = client.create_stream(&sender, &receiver, &token_id, &1000, &100, &300);
+        let stream_id = client.create_stream(
+            &sender,
+            &receiver,
+            &token_id,
+            &1000,
+            &100,
+            &300,
+            &CurveType::Linear,
+        );
 
         client.pause_stream(&stream_id, &sender);
 
@@ -927,7 +998,15 @@ mod test {
         let token_admin_client = StellarAssetClient::new(&env, &token_id);
         token_admin_client.mint(&sender, &10000);
 
-        let stream_id = client.create_stream(&sender, &receiver, &token_id, &1000, &100, &300);
+        let stream_id = client.create_stream(
+            &sender,
+            &receiver,
+            &token_id,
+            &1000,
+            &100,
+            &300,
+            &CurveType::Linear,
+        );
 
         env.ledger().with_mut(|li| li.timestamp = 150);
         let metadata_before = client.get_receipt_metadata(&stream_id);
@@ -990,6 +1069,7 @@ mod test {
             &0,
             &360,
             &milestones,
+            &CurveType::Linear,
         );
 
         env.ledger().with_mut(|li| li.timestamp = 45);
@@ -1036,6 +1116,7 @@ mod test {
             &0,
             &200,
             &milestones,
+            &CurveType::Linear,
         );
 
         env.ledger().with_mut(|li| li.timestamp = 50);
@@ -1049,5 +1130,52 @@ mod test {
         env.ledger().with_mut(|li| li.timestamp = 200);
         let metadata = client.get_receipt_metadata(&stream_id);
         assert_eq!(metadata.unlocked_balance, 1000);
+    }
+
+    #[test]
+    fn test_exponential_stream() {
+        let env = Env::default();
+        env.mock_all_auths_allowing_non_root_auth();
+        env.ledger().with_mut(|li| li.timestamp = 0);
+
+        let contract_id = env.register(StellarStreamContract, ());
+        let client = StellarStreamContractClient::new(&env, &contract_id);
+
+        let sender = Address::generate(&env);
+        let receiver = Address::generate(&env);
+        let admin = Address::generate(&env);
+        let (token_id, _) = create_token_contract(&env, &admin);
+
+        let token_admin_client = StellarAssetClient::new(&env, &token_id);
+        token_admin_client.mint(&sender, &10000);
+
+        let stream_id = client.create_stream(
+            &sender,
+            &receiver,
+            &token_id,
+            &1000,
+            &0,
+            &100,
+            &CurveType::Exponential,
+        );
+
+        // At 50% time: should have ~25% unlocked (0.5^2 = 0.25)
+        env.ledger().with_mut(|li| li.timestamp = 50);
+        let metadata = client.get_receipt_metadata(&stream_id);
+        assert!(metadata.unlocked_balance >= 240 && metadata.unlocked_balance <= 260);
+
+        // At 70% time: should have ~49% unlocked (0.7^2 = 0.49)
+        env.ledger().with_mut(|li| li.timestamp = 70);
+        let metadata = client.get_receipt_metadata(&stream_id);
+        assert!(metadata.unlocked_balance >= 480 && metadata.unlocked_balance <= 500);
+
+        // At 100% time: should have 100% unlocked
+        env.ledger().with_mut(|li| li.timestamp = 100);
+        let metadata = client.get_receipt_metadata(&stream_id);
+        assert_eq!(metadata.unlocked_balance, 1000);
+
+        // Verify withdrawal works
+        let withdrawn = client.withdraw(&stream_id, &receiver);
+        assert_eq!(withdrawn, 1000);
     }
 }

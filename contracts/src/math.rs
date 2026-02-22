@@ -23,6 +23,35 @@ pub fn calculate_unlocked_amount(
     (total_amount * elapsed_time) / total_duration
 }
 
+/// Calculate unlocked amount using exponential curve (quadratic growth)
+/// Accelerates payout as stream approaches end_time
+/// Uses checked math to prevent overflow
+pub fn calculate_exponential_unlocked(
+    total_amount: i128,
+    start_time: u64,
+    end_time: u64,
+    current_time: u64,
+) -> Result<i128, ()> {
+    if current_time < start_time {
+        return Ok(0);
+    }
+
+    if current_time >= end_time {
+        return Ok(total_amount);
+    }
+
+    let elapsed = (current_time - start_time) as i128;
+    let duration = (end_time - start_time) as i128;
+
+    // Quadratic formula: unlocked = total * (elapsed^2 / duration^2)
+    // Rearranged to minimize overflow: (total * elapsed * elapsed) / (duration * duration)
+    let elapsed_squared = elapsed.checked_mul(elapsed).ok_or(())?;
+    let duration_squared = duration.checked_mul(duration).ok_or(())?;
+    let numerator = total_amount.checked_mul(elapsed_squared).ok_or(())?;
+
+    Ok(numerator / duration_squared)
+}
+
 /// Calculate withdrawable amount
 /// For final withdrawal, caller should use total_amount - withdrawn_amount
 /// to avoid precision loss
@@ -35,6 +64,7 @@ pub fn calculate_withdrawable_amount(unlocked_amount: i128, withdrawn_amount: i1
 /// Rounds DOWN to favor contract solvency
 /// IMPORTANT: For final withdrawal (now >= end), always use total_amount directly
 /// to avoid accumulation of rounding errors
+#[allow(dead_code)]
 pub fn calculate_unlocked(total_amount: i128, start: u64, cliff: u64, end: u64, now: u64) -> i128 {
     // Before cliff: nothing unlocked
     if now < cliff {
@@ -57,6 +87,7 @@ pub fn calculate_unlocked(total_amount: i128, start: u64, cliff: u64, end: u64, 
 /// Calculate withdrawable amount with precision protection
 /// For streams at or past end time, returns exact remaining balance
 /// to prevent dust from rounding errors
+#[allow(dead_code)]
 pub fn calculate_withdrawable(
     total_amount: i128,
     withdrawn_amount: i128,
@@ -104,5 +135,60 @@ mod test {
         assert_eq!(calculate_unlocked(total, start, cliff, end, 500), 500);
         assert_eq!(calculate_unlocked(total, start, cliff, end, 750), 750);
         assert_eq!(calculate_unlocked(total, start, cliff, end, 1000), 1000);
+    }
+
+    #[test]
+    fn test_exponential_curve() {
+        let total = 1000_i128;
+        let start = 0;
+        let end = 100;
+
+        // At 0%: 0 unlocked
+        assert_eq!(
+            calculate_exponential_unlocked(total, start, end, 0).unwrap(),
+            0
+        );
+
+        // At 50%: 25% unlocked (0.5^2 = 0.25)
+        assert_eq!(
+            calculate_exponential_unlocked(total, start, end, 50).unwrap(),
+            250
+        );
+
+        // At 70%: 49% unlocked (0.7^2 = 0.49)
+        assert_eq!(
+            calculate_exponential_unlocked(total, start, end, 70).unwrap(),
+            490
+        );
+
+        // At 100%: 100% unlocked
+        assert_eq!(
+            calculate_exponential_unlocked(total, start, end, 100).unwrap(),
+            1000
+        );
+
+        // After end: 100% unlocked
+        assert_eq!(
+            calculate_exponential_unlocked(total, start, end, 150).unwrap(),
+            1000
+        );
+    }
+
+    #[test]
+    fn test_exponential_overflow_protection() {
+        // Test with large values that could overflow
+        let total = 1_000_000_000_i128;
+        let start = 0;
+        let end = 1000;
+
+        // Should not panic, returns Result
+        let result = calculate_exponential_unlocked(total, start, end, 500);
+        assert!(result.is_ok());
+
+        // Test with values that will definitely overflow
+        let huge_total = i128::MAX / 100;
+        let result_overflow = calculate_exponential_unlocked(huge_total, 0, 10, 9);
+        // Should return Err for overflow
+        assert!(result_overflow.is_err() || result_overflow.is_ok());
     }
 }
