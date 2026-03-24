@@ -5,32 +5,37 @@ import { usePathname } from "next/navigation";
 import { useState, type ComponentType } from "react";
 import {
   CirclePlus,
+  ClipboardCheck,
   Gauge,
   Settings,
   Waves,
   PanelLeftClose,
   PanelLeftOpen,
-  ArrowUpFromLine,
 } from "lucide-react";
 
 type NavItem = {
   label: string;
   href: string;
   icon: ComponentType<{ className?: string }>;
+  /** Number shown as a badge. Omit or 0 to hide. */
+  badge?: number;
 };
 
 const navItems: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: Gauge },
   { label: "My Streams", href: "/dashboard/streams", icon: Waves },
   {
+    label: "Pending Approvals",
+    href: "/dashboard/pending",
+    icon: ClipboardCheck,
+    // Hardcoded to 2 (streams awaiting the current user's signature).
+    // Replace with a value from a shared context / SWR hook when integrating live data.
+    badge: 2,
+  },
+  {
     label: "Create Stream",
     href: "/dashboard/create-stream",
     icon: CirclePlus,
-  },
-  {
-    label: "Migration Center",
-    href: "/dashboard/streams",
-    icon: ArrowUpFromLine,
   },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
@@ -108,7 +113,7 @@ export function Sidebar() {
                     }`}
                 />
                 <span
-                  className={`font-body relative text-sm whitespace-nowrap transition-all duration-300 ease-in-out ${active ? "text-white" : "text-white/78"
+                  className={`font-body relative text-sm whitespace-nowrap transition-all duration-300 ease-in-out flex-1 ${active ? "text-white" : "text-white/78"
                     } ${collapsed
                       ? "w-0 overflow-hidden opacity-0"
                       : "w-auto opacity-100"
@@ -116,6 +121,16 @@ export function Sidebar() {
                 >
                   {item.label}
                 </span>
+                {!collapsed && item.badge && item.badge > 0 ? (
+                  <span className="relative ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-[#00f5ff] px-1 text-[10px] font-bold leading-none text-black shadow-[0_0_8px_rgba(0,245,255,0.6)]">
+                    {item.badge}
+                  </span>
+                ) : null}
+                {collapsed && item.badge && item.badge > 0 ? (
+                  <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#00f5ff] text-[8px] font-bold leading-none text-black">
+                    {item.badge}
+                  </span>
+                ) : null}
               </Link>
             );
           })}
