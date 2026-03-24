@@ -67,6 +67,19 @@ impl Contract {
     /// Return the current approval threshold.
     pub fn get_threshold(env: Env) -> u32 {
         storage::get_threshold(&env)
+    // Issue #396 — Dust Threshold
+    // ----------------------------------------------------------------
+
+    /// Return the minimum stream amount for `asset` (default: 10 XLM).
+    pub fn get_min_value(env: Env, asset: Address) -> i128 {
+        storage::get_min_value(&env, &asset)
+    }
+
+    /// Override the minimum for a specific asset. Admin-only.
+    pub fn set_min_value(env: Env, asset: Address, min: i128) -> Result<(), ContractError> {
+        storage::get_admin(&env).require_auth();
+        storage::set_min_value(&env, &asset, min);
+        Ok(())
     }
 
     // ----------------------------------------------------------------
@@ -138,6 +151,7 @@ impl Contract {
         };
 
         storage::set_stream(&env, v2_stream_id, &v2_stream);
+        storage::update_stats(&env, remaining, &v1_stream.sender, &caller);
 
         env.events().publish(
             (symbol_short!("migrated"), caller.clone()),
@@ -157,6 +171,10 @@ impl Contract {
         storage::get_stream(&env, stream_id)
     }
 
+    pub fn get_v2_protocol_health(env: Env) -> types::ProtocolHealthV2 {
+        storage::get_health(&env)
+    }
+    
     // ----------------------------------------------------------------
     // Issue #360 — Permit Streaming
     // ----------------------------------------------------------------
@@ -178,6 +196,11 @@ impl Contract {
         // ── Guard: deadline ──────────────────────────────────────────
         if now > deadline {
             return Err(ContractError::ExpiredDeadline);
+        }
+
+        // ── Guard: dust threshold ─────────────────────────────────────
+        if total_amount < storage::get_min_value(&env, &token) {
+            return Err(ContractError::BelowDustThreshold);
         }
 
         // ── Guard: nonce ─────────────────────────────────────────────
@@ -241,6 +264,7 @@ impl Contract {
         };
 
         storage::set_stream(&env, stream_id, &stream);
+        storage::update_stats(&env, total_amount, &sender_addr, &receiver);
 
         // ── Emit event ────────────────────────────────────────────────
         env.events().publish(

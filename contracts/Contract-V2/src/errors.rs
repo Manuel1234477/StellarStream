@@ -14,4 +14,5 @@ pub enum ContractError {
     // Issue #400
     InvalidThreshold = 8,   // threshold == 0 or threshold > len(admins)
     NotEnoughSigners = 9,   // fewer than threshold admins authorised the tx
+    BelowDustThreshold = 8,
 }
