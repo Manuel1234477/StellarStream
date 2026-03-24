@@ -176,6 +176,22 @@ impl Contract {
     }
     
     // ----------------------------------------------------------------
+    // Issue #404 — Bulk TTL Extension
+    // ----------------------------------------------------------------
+
+    /// Extend persistent storage TTL for each stream ID in `ids`.
+    ///
+    /// Public and permissionless — anyone (altruistic keeper, incentivised
+    /// bot, or the stream participants themselves) can call this to prevent
+    /// active streams from expiring due to storage rent.
+    ///
+    /// Returns the number of streams whose TTL was actually extended
+    /// (IDs that no longer exist are silently skipped).
+    pub fn bump_active_streams_ttl(env: Env, ids: Vec<u64>) -> u32 {
+        storage::bump_streams_ttl(&env, &ids)
+    }
+
+    // ----------------------------------------------------------------
     // Issue #360 — Permit Streaming
     // ----------------------------------------------------------------
 
