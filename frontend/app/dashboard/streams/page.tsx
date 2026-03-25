@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import StreamingBalanceCard from "@/components/streamingbalance/streamingbalance";
 import { ArrowUpRight, ArrowDownLeft, ChevronDown } from "lucide-react";
 import { useScrollBlur } from "@/lib/use-scroll-blur";
 import MigrationWizard from "@/components/migration-wizard";
+import StreamRowSkeleton from "@/components/stream-row-skeleton";
 
 type Stream = {
   id: string;
@@ -69,7 +70,13 @@ const mockIncomingStreams: Stream[] = [
   },
 ];
 
-function StreamCard({ stream, type }: { stream: Stream; type: "outgoing" | "incoming" }) {
+function StreamCard({
+  stream,
+  type,
+}: {
+  stream: Stream;
+  type: "outgoing" | "incoming";
+}) {
   const Icon = type === "outgoing" ? ArrowUpRight : ArrowDownLeft;
   const iconColor = type === "outgoing" ? "text-red-400" : "text-green-400";
 
@@ -82,25 +89,29 @@ function StreamCard({ stream, type }: { stream: Stream; type: "outgoing" | "inco
 
   return (
     <div
-      className={`relative rounded-xl border backdrop-blur-xl p-4 transition-all duration-300 hover:bg-white/[0.06] ${stream.status === "active"
+      className={`relative rounded-xl border backdrop-blur-xl p-4 transition-all duration-300 hover:bg-white/[0.06] ${
+        stream.status === "active"
           ? "border-[#00f5ff]/40 bg-white/[0.04] animate-pulse-border"
           : "border-white/10 bg-white/[0.02]"
-        }`}
+      }`}
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className={`p-1.5 rounded-lg bg-white/5 ${iconColor}`}>
             <Icon size={16} />
           </div>
-          <span className="font-mono text-sm text-white/90">{stream.recipient}</span>
+          <span className="font-mono text-sm text-white/90">
+            {stream.recipient}
+          </span>
         </div>
         <span
-          className={`text-xs px-2 py-0.5 rounded-full ${stream.status === "active"
+          className={`text-xs px-2 py-0.5 rounded-full ${
+            stream.status === "active"
               ? "bg-[#00f5ff]/20 text-[#00f5ff]"
               : stream.status === "paused"
                 ? "bg-yellow-500/20 text-yellow-400"
                 : "bg-white/10 text-white/60"
-            }`}
+          }`}
         >
           {stream.status}
         </span>
@@ -109,12 +120,16 @@ function StreamCard({ stream, type }: { stream: Stream; type: "outgoing" | "inco
       <div className="space-y-2">
         <div className="flex justify-between items-baseline">
           <span className="text-xs text-white/50">Total Amount</span>
-          <span className="text-lg font-semibold text-white">${stream.amount.toLocaleString()}</span>
+          <span className="text-lg font-semibold text-white">
+            ${stream.amount.toLocaleString()}
+          </span>
         </div>
 
         <div className="flex justify-between items-baseline">
           <span className="text-xs text-white/50">Rate</span>
-          <span className="text-sm text-white/70">${stream.rate.toFixed(8)}/ms</span>
+          <span className="text-sm text-white/70">
+            ${stream.rate.toFixed(8)}/ms
+          </span>
         </div>
 
         <div className="pt-2">
@@ -142,10 +157,23 @@ export default function StreamsPage() {
   const [migrationOpen, setMigrationOpen] = useState(false);
   const [outgoingSort, setOutgoingSort] = useState<SortOption>("endDate");
   const [incomingSort, setIncomingSort] = useState<SortOption>("endDate");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate data fetch — replace with real fetch when ready
+    const timer = setTimeout(() => setIsLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Scroll blur hooks for adaptive lucency
-  const [outgoingScrollState, outgoingScrollRef] = useScrollBlur({ threshold: 10, maxScroll: 200 });
-  const [incomingScrollState, incomingScrollRef] = useScrollBlur({ threshold: 10, maxScroll: 200 });
+  const [outgoingScrollState, outgoingScrollRef] = useScrollBlur({
+    threshold: 10,
+    maxScroll: 200,
+  });
+  const [incomingScrollState, incomingScrollRef] = useScrollBlur({
+    threshold: 10,
+    maxScroll: 200,
+  });
 
   const sortStreams = (streams: Stream[], sortBy: SortOption) => {
     return [...streams].sort((a, b) => {
@@ -158,12 +186,12 @@ export default function StreamsPage() {
 
   const sortedOutgoing = useMemo(
     () => sortStreams(mockOutgoingStreams, outgoingSort),
-    [outgoingSort]
+    [outgoingSort],
   );
 
   const sortedIncoming = useMemo(
     () => sortStreams(mockIncomingStreams, incomingSort),
-    [incomingSort]
+    [incomingSort],
   );
 
   const totalStreaming = useMemo(() => {
@@ -195,7 +223,8 @@ export default function StreamsPage() {
             V1
           </span>
           <p className="font-body text-sm text-white/70">
-            You have legacy V1 streams — upgrade to Nebula V2 to unlock yield, Receipt NFTs, and more.
+            You have legacy V1 streams — upgrade to Nebula V2 to unlock yield,
+            Receipt NFTs, and more.
           </p>
         </div>
         <button
@@ -233,7 +262,9 @@ export default function StreamsPage() {
           style={{
             backdropFilter: `blur(${outgoingScrollState.blurIntensity === "md" ? "12px" : outgoingScrollState.blurIntensity === "lg" ? "16px" : outgoingScrollState.blurIntensity === "xl" ? "20px" : "24px"})`,
             backgroundColor: `rgba(255, 255, 255, ${outgoingScrollState.bgOpacity})`,
-            borderBottom: outgoingScrollState.isScrolled ? "1px solid #8a00ff" : "1px solid transparent",
+            borderBottom: outgoingScrollState.isScrolled
+              ? "1px solid #8a00ff"
+              : "1px solid transparent",
           }}
         >
           <div className="flex items-center justify-between">
@@ -252,7 +283,10 @@ export default function StreamsPage() {
                 <option value="endDate">Sort by: End Date</option>
                 <option value="value">Sort by: Value</option>
               </select>
-              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-white/50" size={16} />
+              <ChevronDown
+                className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-white/50"
+                size={16}
+              />
             </div>
           </div>
         </div>
@@ -262,9 +296,13 @@ export default function StreamsPage() {
           ref={outgoingScrollRef}
           className="space-y-3 max-h-[600px] overflow-y-auto px-6 md:px-8 pb-6 md:pb-8 stream-list-scroll"
         >
-          {sortedOutgoing.map((stream) => (
-            <StreamCard key={stream.id} stream={stream} type="outgoing" />
-          ))}
+          {isLoading
+            ? Array.from({ length: 3 }).map((_, i) => (
+                <StreamRowSkeleton key={`out-skeleton-${i}`} />
+              ))
+            : sortedOutgoing.map((stream) => (
+                <StreamCard key={stream.id} stream={stream} type="outgoing" />
+              ))}
         </div>
       </section>
 
@@ -276,7 +314,9 @@ export default function StreamsPage() {
           style={{
             backdropFilter: `blur(${incomingScrollState.blurIntensity === "md" ? "12px" : incomingScrollState.blurIntensity === "lg" ? "16px" : incomingScrollState.blurIntensity === "xl" ? "20px" : "24px"})`,
             backgroundColor: `rgba(255, 255, 255, ${incomingScrollState.bgOpacity})`,
-            borderBottom: incomingScrollState.isScrolled ? "1px solid #8a00ff" : "1px solid transparent",
+            borderBottom: incomingScrollState.isScrolled
+              ? "1px solid #8a00ff"
+              : "1px solid transparent",
           }}
         >
           <div className="flex items-center justify-between">
@@ -295,7 +335,10 @@ export default function StreamsPage() {
                 <option value="endDate">Sort by: End Date</option>
                 <option value="value">Sort by: Value</option>
               </select>
-              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-white/50" size={16} />
+              <ChevronDown
+                className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-white/50"
+                size={16}
+              />
             </div>
           </div>
         </div>
@@ -305,9 +348,13 @@ export default function StreamsPage() {
           ref={incomingScrollRef}
           className="space-y-3 max-h-[600px] overflow-y-auto px-6 md:px-8 pb-6 md:pb-8 stream-list-scroll"
         >
-          {sortedIncoming.map((stream) => (
-            <StreamCard key={stream.id} stream={stream} type="incoming" />
-          ))}
+          {isLoading
+            ? Array.from({ length: 2 }).map((_, i) => (
+                <StreamRowSkeleton key={`in-skeleton-${i}`} />
+              ))
+            : sortedIncoming.map((stream) => (
+                <StreamCard key={stream.id} stream={stream} type="incoming" />
+              ))}
         </div>
       </section>
 
