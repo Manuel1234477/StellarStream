@@ -134,7 +134,17 @@ exports.Prisma.StreamScalarFieldEnum = {
   status: 'status',
   withdrawn: 'withdrawn',
   legacy: 'legacy',
-  migrated: 'migrated'
+  migrated: 'migrated',
+  isPrivate: 'isPrivate',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.TokenPriceScalarFieldEnum = {
+  tokenAddress: 'tokenAddress',
+  symbol: 'symbol',
+  decimals: 'decimals',
+  priceUsd: 'priceUsd',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.WebhookScalarFieldEnum = {
@@ -242,6 +252,17 @@ exports.Prisma.LedgerHashScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.NotificationSubscriptionScalarFieldEnum = {
+  id: 'id',
+  stellarAddress: 'stellarAddress',
+  platform: 'platform',
+  webhookUrl: 'webhookUrl',
+  chatId: 'chatId',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -260,11 +281,18 @@ exports.StreamStatus = exports.$Enums.StreamStatus = {
   ACTIVE: 'ACTIVE',
   PAUSED: 'PAUSED',
   COMPLETED: 'COMPLETED',
-  CANCELED: 'CANCELED'
+  CANCELED: 'CANCELED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.NotificationPlatform = exports.$Enums.NotificationPlatform = {
+  discord: 'discord',
+  telegram: 'telegram'
 };
 
 exports.Prisma.ModelName = {
   Stream: 'Stream',
+  TokenPrice: 'TokenPrice',
   Webhook: 'Webhook',
   SyncState: 'SyncState',
   EventLog: 'EventLog',
@@ -273,7 +301,8 @@ exports.Prisma.ModelName = {
   BridgeLog: 'BridgeLog',
   Proposal: 'Proposal',
   ApiKey: 'ApiKey',
-  LedgerHash: 'LedgerHash'
+  LedgerHash: 'LedgerHash',
+  NotificationSubscription: 'NotificationSubscription'
 };
 
 /**

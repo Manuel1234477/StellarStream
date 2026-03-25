@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Stream = $Result.DefaultSelection<Prisma.$StreamPayload>
 /**
+ * Model TokenPrice
+ * 
+ */
+export type TokenPrice = $Result.DefaultSelection<Prisma.$TokenPricePayload>
+/**
  * Model Webhook
  * 
  */
@@ -63,6 +68,11 @@ export type ApiKey = $Result.DefaultSelection<Prisma.$ApiKeyPayload>
  * 
  */
 export type LedgerHash = $Result.DefaultSelection<Prisma.$LedgerHashPayload>
+/**
+ * Model NotificationSubscription
+ * 
+ */
+export type NotificationSubscription = $Result.DefaultSelection<Prisma.$NotificationSubscriptionPayload>
 
 /**
  * Enums
@@ -72,16 +82,29 @@ export namespace $Enums {
   ACTIVE: 'ACTIVE',
   PAUSED: 'PAUSED',
   COMPLETED: 'COMPLETED',
-  CANCELED: 'CANCELED'
+  CANCELED: 'CANCELED',
+  ARCHIVED: 'ARCHIVED'
 };
 
 export type StreamStatus = (typeof StreamStatus)[keyof typeof StreamStatus]
+
+
+export const NotificationPlatform: {
+  discord: 'discord',
+  telegram: 'telegram'
+};
+
+export type NotificationPlatform = (typeof NotificationPlatform)[keyof typeof NotificationPlatform]
 
 }
 
 export type StreamStatus = $Enums.StreamStatus
 
 export const StreamStatus: typeof $Enums.StreamStatus
+
+export type NotificationPlatform = $Enums.NotificationPlatform
+
+export const NotificationPlatform: typeof $Enums.NotificationPlatform
 
 /**
  * ##  Prisma Client ʲˢ
@@ -217,6 +240,16 @@ export class PrismaClient<
   get stream(): Prisma.StreamDelegate<ExtArgs>;
 
   /**
+   * `prisma.tokenPrice`: Exposes CRUD operations for the **TokenPrice** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TokenPrices
+    * const tokenPrices = await prisma.tokenPrice.findMany()
+    * ```
+    */
+  get tokenPrice(): Prisma.TokenPriceDelegate<ExtArgs>;
+
+  /**
    * `prisma.webhook`: Exposes CRUD operations for the **Webhook** model.
     * Example usage:
     * ```ts
@@ -305,6 +338,16 @@ export class PrismaClient<
     * ```
     */
   get ledgerHash(): Prisma.LedgerHashDelegate<ExtArgs>;
+
+  /**
+   * `prisma.notificationSubscription`: Exposes CRUD operations for the **NotificationSubscription** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more NotificationSubscriptions
+    * const notificationSubscriptions = await prisma.notificationSubscription.findMany()
+    * ```
+    */
+  get notificationSubscription(): Prisma.NotificationSubscriptionDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -747,6 +790,7 @@ export namespace Prisma {
 
   export const ModelName: {
     Stream: 'Stream',
+    TokenPrice: 'TokenPrice',
     Webhook: 'Webhook',
     SyncState: 'SyncState',
     EventLog: 'EventLog',
@@ -755,7 +799,8 @@ export namespace Prisma {
     BridgeLog: 'BridgeLog',
     Proposal: 'Proposal',
     ApiKey: 'ApiKey',
-    LedgerHash: 'LedgerHash'
+    LedgerHash: 'LedgerHash',
+    NotificationSubscription: 'NotificationSubscription'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -771,7 +816,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "stream" | "webhook" | "syncState" | "eventLog" | "streamSnapshot" | "streamArchive" | "bridgeLog" | "proposal" | "apiKey" | "ledgerHash"
+      modelProps: "stream" | "tokenPrice" | "webhook" | "syncState" | "eventLog" | "streamSnapshot" | "streamArchive" | "bridgeLog" | "proposal" | "apiKey" | "ledgerHash" | "notificationSubscription"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -842,6 +887,76 @@ export namespace Prisma {
           count: {
             args: Prisma.StreamCountArgs<ExtArgs>
             result: $Utils.Optional<StreamCountAggregateOutputType> | number
+          }
+        }
+      }
+      TokenPrice: {
+        payload: Prisma.$TokenPricePayload<ExtArgs>
+        fields: Prisma.TokenPriceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TokenPriceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenPricePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TokenPriceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenPricePayload>
+          }
+          findFirst: {
+            args: Prisma.TokenPriceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenPricePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TokenPriceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenPricePayload>
+          }
+          findMany: {
+            args: Prisma.TokenPriceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenPricePayload>[]
+          }
+          create: {
+            args: Prisma.TokenPriceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenPricePayload>
+          }
+          createMany: {
+            args: Prisma.TokenPriceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TokenPriceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenPricePayload>[]
+          }
+          delete: {
+            args: Prisma.TokenPriceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenPricePayload>
+          }
+          update: {
+            args: Prisma.TokenPriceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenPricePayload>
+          }
+          deleteMany: {
+            args: Prisma.TokenPriceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TokenPriceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.TokenPriceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenPricePayload>
+          }
+          aggregate: {
+            args: Prisma.TokenPriceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTokenPrice>
+          }
+          groupBy: {
+            args: Prisma.TokenPriceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TokenPriceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TokenPriceCountArgs<ExtArgs>
+            result: $Utils.Optional<TokenPriceCountAggregateOutputType> | number
           }
         }
       }
@@ -1475,6 +1590,76 @@ export namespace Prisma {
           }
         }
       }
+      NotificationSubscription: {
+        payload: Prisma.$NotificationSubscriptionPayload<ExtArgs>
+        fields: Prisma.NotificationSubscriptionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.NotificationSubscriptionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationSubscriptionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NotificationSubscriptionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationSubscriptionPayload>
+          }
+          findFirst: {
+            args: Prisma.NotificationSubscriptionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationSubscriptionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NotificationSubscriptionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationSubscriptionPayload>
+          }
+          findMany: {
+            args: Prisma.NotificationSubscriptionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationSubscriptionPayload>[]
+          }
+          create: {
+            args: Prisma.NotificationSubscriptionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationSubscriptionPayload>
+          }
+          createMany: {
+            args: Prisma.NotificationSubscriptionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.NotificationSubscriptionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationSubscriptionPayload>[]
+          }
+          delete: {
+            args: Prisma.NotificationSubscriptionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationSubscriptionPayload>
+          }
+          update: {
+            args: Prisma.NotificationSubscriptionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationSubscriptionPayload>
+          }
+          deleteMany: {
+            args: Prisma.NotificationSubscriptionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NotificationSubscriptionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.NotificationSubscriptionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationSubscriptionPayload>
+          }
+          aggregate: {
+            args: Prisma.NotificationSubscriptionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNotificationSubscription>
+          }
+          groupBy: {
+            args: Prisma.NotificationSubscriptionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NotificationSubscriptionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NotificationSubscriptionCountArgs<ExtArgs>
+            result: $Utils.Optional<NotificationSubscriptionCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1669,6 +1854,8 @@ export namespace Prisma {
     withdrawn: string | null
     legacy: boolean | null
     migrated: boolean | null
+    isPrivate: boolean | null
+    createdAt: Date | null
   }
 
   export type StreamMaxAggregateOutputType = {
@@ -1684,6 +1871,8 @@ export namespace Prisma {
     withdrawn: string | null
     legacy: boolean | null
     migrated: boolean | null
+    isPrivate: boolean | null
+    createdAt: Date | null
   }
 
   export type StreamCountAggregateOutputType = {
@@ -1699,6 +1888,8 @@ export namespace Prisma {
     withdrawn: number
     legacy: number
     migrated: number
+    isPrivate: number
+    createdAt: number
     _all: number
   }
 
@@ -1724,6 +1915,8 @@ export namespace Prisma {
     withdrawn?: true
     legacy?: true
     migrated?: true
+    isPrivate?: true
+    createdAt?: true
   }
 
   export type StreamMaxAggregateInputType = {
@@ -1739,6 +1932,8 @@ export namespace Prisma {
     withdrawn?: true
     legacy?: true
     migrated?: true
+    isPrivate?: true
+    createdAt?: true
   }
 
   export type StreamCountAggregateInputType = {
@@ -1754,6 +1949,8 @@ export namespace Prisma {
     withdrawn?: true
     legacy?: true
     migrated?: true
+    isPrivate?: true
+    createdAt?: true
     _all?: true
   }
 
@@ -1856,6 +2053,8 @@ export namespace Prisma {
     withdrawn: string | null
     legacy: boolean
     migrated: boolean
+    isPrivate: boolean
+    createdAt: Date
     _count: StreamCountAggregateOutputType | null
     _avg: StreamAvgAggregateOutputType | null
     _sum: StreamSumAggregateOutputType | null
@@ -1890,6 +2089,8 @@ export namespace Prisma {
     withdrawn?: boolean
     legacy?: boolean
     migrated?: boolean
+    isPrivate?: boolean
+    createdAt?: boolean
   }, ExtArgs["result"]["stream"]>
 
   export type StreamSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1905,6 +2106,8 @@ export namespace Prisma {
     withdrawn?: boolean
     legacy?: boolean
     migrated?: boolean
+    isPrivate?: boolean
+    createdAt?: boolean
   }, ExtArgs["result"]["stream"]>
 
   export type StreamSelectScalar = {
@@ -1920,6 +2123,8 @@ export namespace Prisma {
     withdrawn?: boolean
     legacy?: boolean
     migrated?: boolean
+    isPrivate?: boolean
+    createdAt?: boolean
   }
 
 
@@ -1939,6 +2144,8 @@ export namespace Prisma {
       withdrawn: string | null
       legacy: boolean
       migrated: boolean
+      isPrivate: boolean
+      createdAt: Date
     }, ExtArgs["result"]["stream"]>
     composites: {}
   }
@@ -2344,6 +2551,8 @@ export namespace Prisma {
     readonly withdrawn: FieldRef<"Stream", 'String'>
     readonly legacy: FieldRef<"Stream", 'Boolean'>
     readonly migrated: FieldRef<"Stream", 'Boolean'>
+    readonly isPrivate: FieldRef<"Stream", 'Boolean'>
+    readonly createdAt: FieldRef<"Stream", 'DateTime'>
   }
     
 
@@ -2629,6 +2838,922 @@ export namespace Prisma {
      * Select specific fields to fetch from the Stream
      */
     select?: StreamSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TokenPrice
+   */
+
+  export type AggregateTokenPrice = {
+    _count: TokenPriceCountAggregateOutputType | null
+    _avg: TokenPriceAvgAggregateOutputType | null
+    _sum: TokenPriceSumAggregateOutputType | null
+    _min: TokenPriceMinAggregateOutputType | null
+    _max: TokenPriceMaxAggregateOutputType | null
+  }
+
+  export type TokenPriceAvgAggregateOutputType = {
+    decimals: number | null
+    priceUsd: number | null
+  }
+
+  export type TokenPriceSumAggregateOutputType = {
+    decimals: number | null
+    priceUsd: number | null
+  }
+
+  export type TokenPriceMinAggregateOutputType = {
+    tokenAddress: string | null
+    symbol: string | null
+    decimals: number | null
+    priceUsd: number | null
+    updatedAt: Date | null
+  }
+
+  export type TokenPriceMaxAggregateOutputType = {
+    tokenAddress: string | null
+    symbol: string | null
+    decimals: number | null
+    priceUsd: number | null
+    updatedAt: Date | null
+  }
+
+  export type TokenPriceCountAggregateOutputType = {
+    tokenAddress: number
+    symbol: number
+    decimals: number
+    priceUsd: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TokenPriceAvgAggregateInputType = {
+    decimals?: true
+    priceUsd?: true
+  }
+
+  export type TokenPriceSumAggregateInputType = {
+    decimals?: true
+    priceUsd?: true
+  }
+
+  export type TokenPriceMinAggregateInputType = {
+    tokenAddress?: true
+    symbol?: true
+    decimals?: true
+    priceUsd?: true
+    updatedAt?: true
+  }
+
+  export type TokenPriceMaxAggregateInputType = {
+    tokenAddress?: true
+    symbol?: true
+    decimals?: true
+    priceUsd?: true
+    updatedAt?: true
+  }
+
+  export type TokenPriceCountAggregateInputType = {
+    tokenAddress?: true
+    symbol?: true
+    decimals?: true
+    priceUsd?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TokenPriceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TokenPrice to aggregate.
+     */
+    where?: TokenPriceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenPrices to fetch.
+     */
+    orderBy?: TokenPriceOrderByWithRelationInput | TokenPriceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TokenPriceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenPrices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenPrices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TokenPrices
+    **/
+    _count?: true | TokenPriceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TokenPriceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TokenPriceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TokenPriceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TokenPriceMaxAggregateInputType
+  }
+
+  export type GetTokenPriceAggregateType<T extends TokenPriceAggregateArgs> = {
+        [P in keyof T & keyof AggregateTokenPrice]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTokenPrice[P]>
+      : GetScalarType<T[P], AggregateTokenPrice[P]>
+  }
+
+
+
+
+  export type TokenPriceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TokenPriceWhereInput
+    orderBy?: TokenPriceOrderByWithAggregationInput | TokenPriceOrderByWithAggregationInput[]
+    by: TokenPriceScalarFieldEnum[] | TokenPriceScalarFieldEnum
+    having?: TokenPriceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TokenPriceCountAggregateInputType | true
+    _avg?: TokenPriceAvgAggregateInputType
+    _sum?: TokenPriceSumAggregateInputType
+    _min?: TokenPriceMinAggregateInputType
+    _max?: TokenPriceMaxAggregateInputType
+  }
+
+  export type TokenPriceGroupByOutputType = {
+    tokenAddress: string
+    symbol: string
+    decimals: number
+    priceUsd: number
+    updatedAt: Date
+    _count: TokenPriceCountAggregateOutputType | null
+    _avg: TokenPriceAvgAggregateOutputType | null
+    _sum: TokenPriceSumAggregateOutputType | null
+    _min: TokenPriceMinAggregateOutputType | null
+    _max: TokenPriceMaxAggregateOutputType | null
+  }
+
+  type GetTokenPriceGroupByPayload<T extends TokenPriceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TokenPriceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TokenPriceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TokenPriceGroupByOutputType[P]>
+            : GetScalarType<T[P], TokenPriceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TokenPriceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    tokenAddress?: boolean
+    symbol?: boolean
+    decimals?: boolean
+    priceUsd?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["tokenPrice"]>
+
+  export type TokenPriceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    tokenAddress?: boolean
+    symbol?: boolean
+    decimals?: boolean
+    priceUsd?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["tokenPrice"]>
+
+  export type TokenPriceSelectScalar = {
+    tokenAddress?: boolean
+    symbol?: boolean
+    decimals?: boolean
+    priceUsd?: boolean
+    updatedAt?: boolean
+  }
+
+
+  export type $TokenPricePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TokenPrice"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      tokenAddress: string
+      symbol: string
+      decimals: number
+      priceUsd: number
+      updatedAt: Date
+    }, ExtArgs["result"]["tokenPrice"]>
+    composites: {}
+  }
+
+  type TokenPriceGetPayload<S extends boolean | null | undefined | TokenPriceDefaultArgs> = $Result.GetResult<Prisma.$TokenPricePayload, S>
+
+  type TokenPriceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<TokenPriceFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: TokenPriceCountAggregateInputType | true
+    }
+
+  export interface TokenPriceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TokenPrice'], meta: { name: 'TokenPrice' } }
+    /**
+     * Find zero or one TokenPrice that matches the filter.
+     * @param {TokenPriceFindUniqueArgs} args - Arguments to find a TokenPrice
+     * @example
+     * // Get one TokenPrice
+     * const tokenPrice = await prisma.tokenPrice.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TokenPriceFindUniqueArgs>(args: SelectSubset<T, TokenPriceFindUniqueArgs<ExtArgs>>): Prisma__TokenPriceClient<$Result.GetResult<Prisma.$TokenPricePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one TokenPrice that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {TokenPriceFindUniqueOrThrowArgs} args - Arguments to find a TokenPrice
+     * @example
+     * // Get one TokenPrice
+     * const tokenPrice = await prisma.tokenPrice.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TokenPriceFindUniqueOrThrowArgs>(args: SelectSubset<T, TokenPriceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TokenPriceClient<$Result.GetResult<Prisma.$TokenPricePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first TokenPrice that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenPriceFindFirstArgs} args - Arguments to find a TokenPrice
+     * @example
+     * // Get one TokenPrice
+     * const tokenPrice = await prisma.tokenPrice.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TokenPriceFindFirstArgs>(args?: SelectSubset<T, TokenPriceFindFirstArgs<ExtArgs>>): Prisma__TokenPriceClient<$Result.GetResult<Prisma.$TokenPricePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first TokenPrice that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenPriceFindFirstOrThrowArgs} args - Arguments to find a TokenPrice
+     * @example
+     * // Get one TokenPrice
+     * const tokenPrice = await prisma.tokenPrice.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TokenPriceFindFirstOrThrowArgs>(args?: SelectSubset<T, TokenPriceFindFirstOrThrowArgs<ExtArgs>>): Prisma__TokenPriceClient<$Result.GetResult<Prisma.$TokenPricePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more TokenPrices that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenPriceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TokenPrices
+     * const tokenPrices = await prisma.tokenPrice.findMany()
+     * 
+     * // Get first 10 TokenPrices
+     * const tokenPrices = await prisma.tokenPrice.findMany({ take: 10 })
+     * 
+     * // Only select the `tokenAddress`
+     * const tokenPriceWithTokenAddressOnly = await prisma.tokenPrice.findMany({ select: { tokenAddress: true } })
+     * 
+     */
+    findMany<T extends TokenPriceFindManyArgs>(args?: SelectSubset<T, TokenPriceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TokenPricePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a TokenPrice.
+     * @param {TokenPriceCreateArgs} args - Arguments to create a TokenPrice.
+     * @example
+     * // Create one TokenPrice
+     * const TokenPrice = await prisma.tokenPrice.create({
+     *   data: {
+     *     // ... data to create a TokenPrice
+     *   }
+     * })
+     * 
+     */
+    create<T extends TokenPriceCreateArgs>(args: SelectSubset<T, TokenPriceCreateArgs<ExtArgs>>): Prisma__TokenPriceClient<$Result.GetResult<Prisma.$TokenPricePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many TokenPrices.
+     * @param {TokenPriceCreateManyArgs} args - Arguments to create many TokenPrices.
+     * @example
+     * // Create many TokenPrices
+     * const tokenPrice = await prisma.tokenPrice.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TokenPriceCreateManyArgs>(args?: SelectSubset<T, TokenPriceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TokenPrices and returns the data saved in the database.
+     * @param {TokenPriceCreateManyAndReturnArgs} args - Arguments to create many TokenPrices.
+     * @example
+     * // Create many TokenPrices
+     * const tokenPrice = await prisma.tokenPrice.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TokenPrices and only return the `tokenAddress`
+     * const tokenPriceWithTokenAddressOnly = await prisma.tokenPrice.createManyAndReturn({ 
+     *   select: { tokenAddress: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TokenPriceCreateManyAndReturnArgs>(args?: SelectSubset<T, TokenPriceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TokenPricePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a TokenPrice.
+     * @param {TokenPriceDeleteArgs} args - Arguments to delete one TokenPrice.
+     * @example
+     * // Delete one TokenPrice
+     * const TokenPrice = await prisma.tokenPrice.delete({
+     *   where: {
+     *     // ... filter to delete one TokenPrice
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TokenPriceDeleteArgs>(args: SelectSubset<T, TokenPriceDeleteArgs<ExtArgs>>): Prisma__TokenPriceClient<$Result.GetResult<Prisma.$TokenPricePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one TokenPrice.
+     * @param {TokenPriceUpdateArgs} args - Arguments to update one TokenPrice.
+     * @example
+     * // Update one TokenPrice
+     * const tokenPrice = await prisma.tokenPrice.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TokenPriceUpdateArgs>(args: SelectSubset<T, TokenPriceUpdateArgs<ExtArgs>>): Prisma__TokenPriceClient<$Result.GetResult<Prisma.$TokenPricePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more TokenPrices.
+     * @param {TokenPriceDeleteManyArgs} args - Arguments to filter TokenPrices to delete.
+     * @example
+     * // Delete a few TokenPrices
+     * const { count } = await prisma.tokenPrice.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TokenPriceDeleteManyArgs>(args?: SelectSubset<T, TokenPriceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TokenPrices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenPriceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TokenPrices
+     * const tokenPrice = await prisma.tokenPrice.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TokenPriceUpdateManyArgs>(args: SelectSubset<T, TokenPriceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one TokenPrice.
+     * @param {TokenPriceUpsertArgs} args - Arguments to update or create a TokenPrice.
+     * @example
+     * // Update or create a TokenPrice
+     * const tokenPrice = await prisma.tokenPrice.upsert({
+     *   create: {
+     *     // ... data to create a TokenPrice
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TokenPrice we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TokenPriceUpsertArgs>(args: SelectSubset<T, TokenPriceUpsertArgs<ExtArgs>>): Prisma__TokenPriceClient<$Result.GetResult<Prisma.$TokenPricePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of TokenPrices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenPriceCountArgs} args - Arguments to filter TokenPrices to count.
+     * @example
+     * // Count the number of TokenPrices
+     * const count = await prisma.tokenPrice.count({
+     *   where: {
+     *     // ... the filter for the TokenPrices we want to count
+     *   }
+     * })
+    **/
+    count<T extends TokenPriceCountArgs>(
+      args?: Subset<T, TokenPriceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TokenPriceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TokenPrice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenPriceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TokenPriceAggregateArgs>(args: Subset<T, TokenPriceAggregateArgs>): Prisma.PrismaPromise<GetTokenPriceAggregateType<T>>
+
+    /**
+     * Group by TokenPrice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenPriceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TokenPriceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TokenPriceGroupByArgs['orderBy'] }
+        : { orderBy?: TokenPriceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TokenPriceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTokenPriceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TokenPrice model
+   */
+  readonly fields: TokenPriceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TokenPrice.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TokenPriceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TokenPrice model
+   */ 
+  interface TokenPriceFieldRefs {
+    readonly tokenAddress: FieldRef<"TokenPrice", 'String'>
+    readonly symbol: FieldRef<"TokenPrice", 'String'>
+    readonly decimals: FieldRef<"TokenPrice", 'Int'>
+    readonly priceUsd: FieldRef<"TokenPrice", 'Float'>
+    readonly updatedAt: FieldRef<"TokenPrice", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TokenPrice findUnique
+   */
+  export type TokenPriceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenPrice
+     */
+    select?: TokenPriceSelect<ExtArgs> | null
+    /**
+     * Filter, which TokenPrice to fetch.
+     */
+    where: TokenPriceWhereUniqueInput
+  }
+
+  /**
+   * TokenPrice findUniqueOrThrow
+   */
+  export type TokenPriceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenPrice
+     */
+    select?: TokenPriceSelect<ExtArgs> | null
+    /**
+     * Filter, which TokenPrice to fetch.
+     */
+    where: TokenPriceWhereUniqueInput
+  }
+
+  /**
+   * TokenPrice findFirst
+   */
+  export type TokenPriceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenPrice
+     */
+    select?: TokenPriceSelect<ExtArgs> | null
+    /**
+     * Filter, which TokenPrice to fetch.
+     */
+    where?: TokenPriceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenPrices to fetch.
+     */
+    orderBy?: TokenPriceOrderByWithRelationInput | TokenPriceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TokenPrices.
+     */
+    cursor?: TokenPriceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenPrices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenPrices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TokenPrices.
+     */
+    distinct?: TokenPriceScalarFieldEnum | TokenPriceScalarFieldEnum[]
+  }
+
+  /**
+   * TokenPrice findFirstOrThrow
+   */
+  export type TokenPriceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenPrice
+     */
+    select?: TokenPriceSelect<ExtArgs> | null
+    /**
+     * Filter, which TokenPrice to fetch.
+     */
+    where?: TokenPriceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenPrices to fetch.
+     */
+    orderBy?: TokenPriceOrderByWithRelationInput | TokenPriceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TokenPrices.
+     */
+    cursor?: TokenPriceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenPrices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenPrices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TokenPrices.
+     */
+    distinct?: TokenPriceScalarFieldEnum | TokenPriceScalarFieldEnum[]
+  }
+
+  /**
+   * TokenPrice findMany
+   */
+  export type TokenPriceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenPrice
+     */
+    select?: TokenPriceSelect<ExtArgs> | null
+    /**
+     * Filter, which TokenPrices to fetch.
+     */
+    where?: TokenPriceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenPrices to fetch.
+     */
+    orderBy?: TokenPriceOrderByWithRelationInput | TokenPriceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TokenPrices.
+     */
+    cursor?: TokenPriceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenPrices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenPrices.
+     */
+    skip?: number
+    distinct?: TokenPriceScalarFieldEnum | TokenPriceScalarFieldEnum[]
+  }
+
+  /**
+   * TokenPrice create
+   */
+  export type TokenPriceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenPrice
+     */
+    select?: TokenPriceSelect<ExtArgs> | null
+    /**
+     * The data needed to create a TokenPrice.
+     */
+    data: XOR<TokenPriceCreateInput, TokenPriceUncheckedCreateInput>
+  }
+
+  /**
+   * TokenPrice createMany
+   */
+  export type TokenPriceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TokenPrices.
+     */
+    data: TokenPriceCreateManyInput | TokenPriceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TokenPrice createManyAndReturn
+   */
+  export type TokenPriceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenPrice
+     */
+    select?: TokenPriceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many TokenPrices.
+     */
+    data: TokenPriceCreateManyInput | TokenPriceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TokenPrice update
+   */
+  export type TokenPriceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenPrice
+     */
+    select?: TokenPriceSelect<ExtArgs> | null
+    /**
+     * The data needed to update a TokenPrice.
+     */
+    data: XOR<TokenPriceUpdateInput, TokenPriceUncheckedUpdateInput>
+    /**
+     * Choose, which TokenPrice to update.
+     */
+    where: TokenPriceWhereUniqueInput
+  }
+
+  /**
+   * TokenPrice updateMany
+   */
+  export type TokenPriceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TokenPrices.
+     */
+    data: XOR<TokenPriceUpdateManyMutationInput, TokenPriceUncheckedUpdateManyInput>
+    /**
+     * Filter which TokenPrices to update
+     */
+    where?: TokenPriceWhereInput
+  }
+
+  /**
+   * TokenPrice upsert
+   */
+  export type TokenPriceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenPrice
+     */
+    select?: TokenPriceSelect<ExtArgs> | null
+    /**
+     * The filter to search for the TokenPrice to update in case it exists.
+     */
+    where: TokenPriceWhereUniqueInput
+    /**
+     * In case the TokenPrice found by the `where` argument doesn't exist, create a new TokenPrice with this data.
+     */
+    create: XOR<TokenPriceCreateInput, TokenPriceUncheckedCreateInput>
+    /**
+     * In case the TokenPrice was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TokenPriceUpdateInput, TokenPriceUncheckedUpdateInput>
+  }
+
+  /**
+   * TokenPrice delete
+   */
+  export type TokenPriceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenPrice
+     */
+    select?: TokenPriceSelect<ExtArgs> | null
+    /**
+     * Filter which TokenPrice to delete.
+     */
+    where: TokenPriceWhereUniqueInput
+  }
+
+  /**
+   * TokenPrice deleteMany
+   */
+  export type TokenPriceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TokenPrices to delete
+     */
+    where?: TokenPriceWhereInput
+  }
+
+  /**
+   * TokenPrice without action
+   */
+  export type TokenPriceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenPrice
+     */
+    select?: TokenPriceSelect<ExtArgs> | null
   }
 
 
@@ -11197,6 +12322,920 @@ export namespace Prisma {
 
 
   /**
+   * Model NotificationSubscription
+   */
+
+  export type AggregateNotificationSubscription = {
+    _count: NotificationSubscriptionCountAggregateOutputType | null
+    _min: NotificationSubscriptionMinAggregateOutputType | null
+    _max: NotificationSubscriptionMaxAggregateOutputType | null
+  }
+
+  export type NotificationSubscriptionMinAggregateOutputType = {
+    id: string | null
+    stellarAddress: string | null
+    platform: $Enums.NotificationPlatform | null
+    webhookUrl: string | null
+    chatId: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type NotificationSubscriptionMaxAggregateOutputType = {
+    id: string | null
+    stellarAddress: string | null
+    platform: $Enums.NotificationPlatform | null
+    webhookUrl: string | null
+    chatId: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type NotificationSubscriptionCountAggregateOutputType = {
+    id: number
+    stellarAddress: number
+    platform: number
+    webhookUrl: number
+    chatId: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type NotificationSubscriptionMinAggregateInputType = {
+    id?: true
+    stellarAddress?: true
+    platform?: true
+    webhookUrl?: true
+    chatId?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type NotificationSubscriptionMaxAggregateInputType = {
+    id?: true
+    stellarAddress?: true
+    platform?: true
+    webhookUrl?: true
+    chatId?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type NotificationSubscriptionCountAggregateInputType = {
+    id?: true
+    stellarAddress?: true
+    platform?: true
+    webhookUrl?: true
+    chatId?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type NotificationSubscriptionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NotificationSubscription to aggregate.
+     */
+    where?: NotificationSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NotificationSubscriptions to fetch.
+     */
+    orderBy?: NotificationSubscriptionOrderByWithRelationInput | NotificationSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: NotificationSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NotificationSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NotificationSubscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned NotificationSubscriptions
+    **/
+    _count?: true | NotificationSubscriptionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NotificationSubscriptionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NotificationSubscriptionMaxAggregateInputType
+  }
+
+  export type GetNotificationSubscriptionAggregateType<T extends NotificationSubscriptionAggregateArgs> = {
+        [P in keyof T & keyof AggregateNotificationSubscription]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNotificationSubscription[P]>
+      : GetScalarType<T[P], AggregateNotificationSubscription[P]>
+  }
+
+
+
+
+  export type NotificationSubscriptionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationSubscriptionWhereInput
+    orderBy?: NotificationSubscriptionOrderByWithAggregationInput | NotificationSubscriptionOrderByWithAggregationInput[]
+    by: NotificationSubscriptionScalarFieldEnum[] | NotificationSubscriptionScalarFieldEnum
+    having?: NotificationSubscriptionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NotificationSubscriptionCountAggregateInputType | true
+    _min?: NotificationSubscriptionMinAggregateInputType
+    _max?: NotificationSubscriptionMaxAggregateInputType
+  }
+
+  export type NotificationSubscriptionGroupByOutputType = {
+    id: string
+    stellarAddress: string
+    platform: $Enums.NotificationPlatform
+    webhookUrl: string | null
+    chatId: string | null
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: NotificationSubscriptionCountAggregateOutputType | null
+    _min: NotificationSubscriptionMinAggregateOutputType | null
+    _max: NotificationSubscriptionMaxAggregateOutputType | null
+  }
+
+  type GetNotificationSubscriptionGroupByPayload<T extends NotificationSubscriptionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NotificationSubscriptionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NotificationSubscriptionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NotificationSubscriptionGroupByOutputType[P]>
+            : GetScalarType<T[P], NotificationSubscriptionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type NotificationSubscriptionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    stellarAddress?: boolean
+    platform?: boolean
+    webhookUrl?: boolean
+    chatId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["notificationSubscription"]>
+
+  export type NotificationSubscriptionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    stellarAddress?: boolean
+    platform?: boolean
+    webhookUrl?: boolean
+    chatId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["notificationSubscription"]>
+
+  export type NotificationSubscriptionSelectScalar = {
+    id?: boolean
+    stellarAddress?: boolean
+    platform?: boolean
+    webhookUrl?: boolean
+    chatId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+
+  export type $NotificationSubscriptionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "NotificationSubscription"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      stellarAddress: string
+      platform: $Enums.NotificationPlatform
+      webhookUrl: string | null
+      chatId: string | null
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["notificationSubscription"]>
+    composites: {}
+  }
+
+  type NotificationSubscriptionGetPayload<S extends boolean | null | undefined | NotificationSubscriptionDefaultArgs> = $Result.GetResult<Prisma.$NotificationSubscriptionPayload, S>
+
+  type NotificationSubscriptionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<NotificationSubscriptionFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: NotificationSubscriptionCountAggregateInputType | true
+    }
+
+  export interface NotificationSubscriptionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['NotificationSubscription'], meta: { name: 'NotificationSubscription' } }
+    /**
+     * Find zero or one NotificationSubscription that matches the filter.
+     * @param {NotificationSubscriptionFindUniqueArgs} args - Arguments to find a NotificationSubscription
+     * @example
+     * // Get one NotificationSubscription
+     * const notificationSubscription = await prisma.notificationSubscription.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends NotificationSubscriptionFindUniqueArgs>(args: SelectSubset<T, NotificationSubscriptionFindUniqueArgs<ExtArgs>>): Prisma__NotificationSubscriptionClient<$Result.GetResult<Prisma.$NotificationSubscriptionPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one NotificationSubscription that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {NotificationSubscriptionFindUniqueOrThrowArgs} args - Arguments to find a NotificationSubscription
+     * @example
+     * // Get one NotificationSubscription
+     * const notificationSubscription = await prisma.notificationSubscription.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends NotificationSubscriptionFindUniqueOrThrowArgs>(args: SelectSubset<T, NotificationSubscriptionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__NotificationSubscriptionClient<$Result.GetResult<Prisma.$NotificationSubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first NotificationSubscription that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationSubscriptionFindFirstArgs} args - Arguments to find a NotificationSubscription
+     * @example
+     * // Get one NotificationSubscription
+     * const notificationSubscription = await prisma.notificationSubscription.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends NotificationSubscriptionFindFirstArgs>(args?: SelectSubset<T, NotificationSubscriptionFindFirstArgs<ExtArgs>>): Prisma__NotificationSubscriptionClient<$Result.GetResult<Prisma.$NotificationSubscriptionPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first NotificationSubscription that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationSubscriptionFindFirstOrThrowArgs} args - Arguments to find a NotificationSubscription
+     * @example
+     * // Get one NotificationSubscription
+     * const notificationSubscription = await prisma.notificationSubscription.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends NotificationSubscriptionFindFirstOrThrowArgs>(args?: SelectSubset<T, NotificationSubscriptionFindFirstOrThrowArgs<ExtArgs>>): Prisma__NotificationSubscriptionClient<$Result.GetResult<Prisma.$NotificationSubscriptionPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more NotificationSubscriptions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationSubscriptionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all NotificationSubscriptions
+     * const notificationSubscriptions = await prisma.notificationSubscription.findMany()
+     * 
+     * // Get first 10 NotificationSubscriptions
+     * const notificationSubscriptions = await prisma.notificationSubscription.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const notificationSubscriptionWithIdOnly = await prisma.notificationSubscription.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends NotificationSubscriptionFindManyArgs>(args?: SelectSubset<T, NotificationSubscriptionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationSubscriptionPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a NotificationSubscription.
+     * @param {NotificationSubscriptionCreateArgs} args - Arguments to create a NotificationSubscription.
+     * @example
+     * // Create one NotificationSubscription
+     * const NotificationSubscription = await prisma.notificationSubscription.create({
+     *   data: {
+     *     // ... data to create a NotificationSubscription
+     *   }
+     * })
+     * 
+     */
+    create<T extends NotificationSubscriptionCreateArgs>(args: SelectSubset<T, NotificationSubscriptionCreateArgs<ExtArgs>>): Prisma__NotificationSubscriptionClient<$Result.GetResult<Prisma.$NotificationSubscriptionPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many NotificationSubscriptions.
+     * @param {NotificationSubscriptionCreateManyArgs} args - Arguments to create many NotificationSubscriptions.
+     * @example
+     * // Create many NotificationSubscriptions
+     * const notificationSubscription = await prisma.notificationSubscription.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends NotificationSubscriptionCreateManyArgs>(args?: SelectSubset<T, NotificationSubscriptionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many NotificationSubscriptions and returns the data saved in the database.
+     * @param {NotificationSubscriptionCreateManyAndReturnArgs} args - Arguments to create many NotificationSubscriptions.
+     * @example
+     * // Create many NotificationSubscriptions
+     * const notificationSubscription = await prisma.notificationSubscription.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many NotificationSubscriptions and only return the `id`
+     * const notificationSubscriptionWithIdOnly = await prisma.notificationSubscription.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends NotificationSubscriptionCreateManyAndReturnArgs>(args?: SelectSubset<T, NotificationSubscriptionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationSubscriptionPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a NotificationSubscription.
+     * @param {NotificationSubscriptionDeleteArgs} args - Arguments to delete one NotificationSubscription.
+     * @example
+     * // Delete one NotificationSubscription
+     * const NotificationSubscription = await prisma.notificationSubscription.delete({
+     *   where: {
+     *     // ... filter to delete one NotificationSubscription
+     *   }
+     * })
+     * 
+     */
+    delete<T extends NotificationSubscriptionDeleteArgs>(args: SelectSubset<T, NotificationSubscriptionDeleteArgs<ExtArgs>>): Prisma__NotificationSubscriptionClient<$Result.GetResult<Prisma.$NotificationSubscriptionPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one NotificationSubscription.
+     * @param {NotificationSubscriptionUpdateArgs} args - Arguments to update one NotificationSubscription.
+     * @example
+     * // Update one NotificationSubscription
+     * const notificationSubscription = await prisma.notificationSubscription.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends NotificationSubscriptionUpdateArgs>(args: SelectSubset<T, NotificationSubscriptionUpdateArgs<ExtArgs>>): Prisma__NotificationSubscriptionClient<$Result.GetResult<Prisma.$NotificationSubscriptionPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more NotificationSubscriptions.
+     * @param {NotificationSubscriptionDeleteManyArgs} args - Arguments to filter NotificationSubscriptions to delete.
+     * @example
+     * // Delete a few NotificationSubscriptions
+     * const { count } = await prisma.notificationSubscription.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends NotificationSubscriptionDeleteManyArgs>(args?: SelectSubset<T, NotificationSubscriptionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more NotificationSubscriptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationSubscriptionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many NotificationSubscriptions
+     * const notificationSubscription = await prisma.notificationSubscription.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends NotificationSubscriptionUpdateManyArgs>(args: SelectSubset<T, NotificationSubscriptionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one NotificationSubscription.
+     * @param {NotificationSubscriptionUpsertArgs} args - Arguments to update or create a NotificationSubscription.
+     * @example
+     * // Update or create a NotificationSubscription
+     * const notificationSubscription = await prisma.notificationSubscription.upsert({
+     *   create: {
+     *     // ... data to create a NotificationSubscription
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the NotificationSubscription we want to update
+     *   }
+     * })
+     */
+    upsert<T extends NotificationSubscriptionUpsertArgs>(args: SelectSubset<T, NotificationSubscriptionUpsertArgs<ExtArgs>>): Prisma__NotificationSubscriptionClient<$Result.GetResult<Prisma.$NotificationSubscriptionPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of NotificationSubscriptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationSubscriptionCountArgs} args - Arguments to filter NotificationSubscriptions to count.
+     * @example
+     * // Count the number of NotificationSubscriptions
+     * const count = await prisma.notificationSubscription.count({
+     *   where: {
+     *     // ... the filter for the NotificationSubscriptions we want to count
+     *   }
+     * })
+    **/
+    count<T extends NotificationSubscriptionCountArgs>(
+      args?: Subset<T, NotificationSubscriptionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NotificationSubscriptionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a NotificationSubscription.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationSubscriptionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NotificationSubscriptionAggregateArgs>(args: Subset<T, NotificationSubscriptionAggregateArgs>): Prisma.PrismaPromise<GetNotificationSubscriptionAggregateType<T>>
+
+    /**
+     * Group by NotificationSubscription.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationSubscriptionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends NotificationSubscriptionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: NotificationSubscriptionGroupByArgs['orderBy'] }
+        : { orderBy?: NotificationSubscriptionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, NotificationSubscriptionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNotificationSubscriptionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the NotificationSubscription model
+   */
+  readonly fields: NotificationSubscriptionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for NotificationSubscription.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__NotificationSubscriptionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the NotificationSubscription model
+   */ 
+  interface NotificationSubscriptionFieldRefs {
+    readonly id: FieldRef<"NotificationSubscription", 'String'>
+    readonly stellarAddress: FieldRef<"NotificationSubscription", 'String'>
+    readonly platform: FieldRef<"NotificationSubscription", 'NotificationPlatform'>
+    readonly webhookUrl: FieldRef<"NotificationSubscription", 'String'>
+    readonly chatId: FieldRef<"NotificationSubscription", 'String'>
+    readonly isActive: FieldRef<"NotificationSubscription", 'Boolean'>
+    readonly createdAt: FieldRef<"NotificationSubscription", 'DateTime'>
+    readonly updatedAt: FieldRef<"NotificationSubscription", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * NotificationSubscription findUnique
+   */
+  export type NotificationSubscriptionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationSubscription
+     */
+    select?: NotificationSubscriptionSelect<ExtArgs> | null
+    /**
+     * Filter, which NotificationSubscription to fetch.
+     */
+    where: NotificationSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * NotificationSubscription findUniqueOrThrow
+   */
+  export type NotificationSubscriptionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationSubscription
+     */
+    select?: NotificationSubscriptionSelect<ExtArgs> | null
+    /**
+     * Filter, which NotificationSubscription to fetch.
+     */
+    where: NotificationSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * NotificationSubscription findFirst
+   */
+  export type NotificationSubscriptionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationSubscription
+     */
+    select?: NotificationSubscriptionSelect<ExtArgs> | null
+    /**
+     * Filter, which NotificationSubscription to fetch.
+     */
+    where?: NotificationSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NotificationSubscriptions to fetch.
+     */
+    orderBy?: NotificationSubscriptionOrderByWithRelationInput | NotificationSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NotificationSubscriptions.
+     */
+    cursor?: NotificationSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NotificationSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NotificationSubscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NotificationSubscriptions.
+     */
+    distinct?: NotificationSubscriptionScalarFieldEnum | NotificationSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * NotificationSubscription findFirstOrThrow
+   */
+  export type NotificationSubscriptionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationSubscription
+     */
+    select?: NotificationSubscriptionSelect<ExtArgs> | null
+    /**
+     * Filter, which NotificationSubscription to fetch.
+     */
+    where?: NotificationSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NotificationSubscriptions to fetch.
+     */
+    orderBy?: NotificationSubscriptionOrderByWithRelationInput | NotificationSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NotificationSubscriptions.
+     */
+    cursor?: NotificationSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NotificationSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NotificationSubscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NotificationSubscriptions.
+     */
+    distinct?: NotificationSubscriptionScalarFieldEnum | NotificationSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * NotificationSubscription findMany
+   */
+  export type NotificationSubscriptionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationSubscription
+     */
+    select?: NotificationSubscriptionSelect<ExtArgs> | null
+    /**
+     * Filter, which NotificationSubscriptions to fetch.
+     */
+    where?: NotificationSubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NotificationSubscriptions to fetch.
+     */
+    orderBy?: NotificationSubscriptionOrderByWithRelationInput | NotificationSubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing NotificationSubscriptions.
+     */
+    cursor?: NotificationSubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NotificationSubscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NotificationSubscriptions.
+     */
+    skip?: number
+    distinct?: NotificationSubscriptionScalarFieldEnum | NotificationSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * NotificationSubscription create
+   */
+  export type NotificationSubscriptionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationSubscription
+     */
+    select?: NotificationSubscriptionSelect<ExtArgs> | null
+    /**
+     * The data needed to create a NotificationSubscription.
+     */
+    data: XOR<NotificationSubscriptionCreateInput, NotificationSubscriptionUncheckedCreateInput>
+  }
+
+  /**
+   * NotificationSubscription createMany
+   */
+  export type NotificationSubscriptionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many NotificationSubscriptions.
+     */
+    data: NotificationSubscriptionCreateManyInput | NotificationSubscriptionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * NotificationSubscription createManyAndReturn
+   */
+  export type NotificationSubscriptionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationSubscription
+     */
+    select?: NotificationSubscriptionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many NotificationSubscriptions.
+     */
+    data: NotificationSubscriptionCreateManyInput | NotificationSubscriptionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * NotificationSubscription update
+   */
+  export type NotificationSubscriptionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationSubscription
+     */
+    select?: NotificationSubscriptionSelect<ExtArgs> | null
+    /**
+     * The data needed to update a NotificationSubscription.
+     */
+    data: XOR<NotificationSubscriptionUpdateInput, NotificationSubscriptionUncheckedUpdateInput>
+    /**
+     * Choose, which NotificationSubscription to update.
+     */
+    where: NotificationSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * NotificationSubscription updateMany
+   */
+  export type NotificationSubscriptionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update NotificationSubscriptions.
+     */
+    data: XOR<NotificationSubscriptionUpdateManyMutationInput, NotificationSubscriptionUncheckedUpdateManyInput>
+    /**
+     * Filter which NotificationSubscriptions to update
+     */
+    where?: NotificationSubscriptionWhereInput
+  }
+
+  /**
+   * NotificationSubscription upsert
+   */
+  export type NotificationSubscriptionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationSubscription
+     */
+    select?: NotificationSubscriptionSelect<ExtArgs> | null
+    /**
+     * The filter to search for the NotificationSubscription to update in case it exists.
+     */
+    where: NotificationSubscriptionWhereUniqueInput
+    /**
+     * In case the NotificationSubscription found by the `where` argument doesn't exist, create a new NotificationSubscription with this data.
+     */
+    create: XOR<NotificationSubscriptionCreateInput, NotificationSubscriptionUncheckedCreateInput>
+    /**
+     * In case the NotificationSubscription was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<NotificationSubscriptionUpdateInput, NotificationSubscriptionUncheckedUpdateInput>
+  }
+
+  /**
+   * NotificationSubscription delete
+   */
+  export type NotificationSubscriptionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationSubscription
+     */
+    select?: NotificationSubscriptionSelect<ExtArgs> | null
+    /**
+     * Filter which NotificationSubscription to delete.
+     */
+    where: NotificationSubscriptionWhereUniqueInput
+  }
+
+  /**
+   * NotificationSubscription deleteMany
+   */
+  export type NotificationSubscriptionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NotificationSubscriptions to delete
+     */
+    where?: NotificationSubscriptionWhereInput
+  }
+
+  /**
+   * NotificationSubscription without action
+   */
+  export type NotificationSubscriptionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationSubscription
+     */
+    select?: NotificationSubscriptionSelect<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -11222,10 +13261,23 @@ export namespace Prisma {
     status: 'status',
     withdrawn: 'withdrawn',
     legacy: 'legacy',
-    migrated: 'migrated'
+    migrated: 'migrated',
+    isPrivate: 'isPrivate',
+    createdAt: 'createdAt'
   };
 
   export type StreamScalarFieldEnum = (typeof StreamScalarFieldEnum)[keyof typeof StreamScalarFieldEnum]
+
+
+  export const TokenPriceScalarFieldEnum: {
+    tokenAddress: 'tokenAddress',
+    symbol: 'symbol',
+    decimals: 'decimals',
+    priceUsd: 'priceUsd',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TokenPriceScalarFieldEnum = (typeof TokenPriceScalarFieldEnum)[keyof typeof TokenPriceScalarFieldEnum]
 
 
   export const WebhookScalarFieldEnum: {
@@ -11360,6 +13412,20 @@ export namespace Prisma {
   export type LedgerHashScalarFieldEnum = (typeof LedgerHashScalarFieldEnum)[keyof typeof LedgerHashScalarFieldEnum]
 
 
+  export const NotificationSubscriptionScalarFieldEnum: {
+    id: 'id',
+    stellarAddress: 'stellarAddress',
+    platform: 'platform',
+    webhookUrl: 'webhookUrl',
+    chatId: 'chatId',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type NotificationSubscriptionScalarFieldEnum = (typeof NotificationSubscriptionScalarFieldEnum)[keyof typeof NotificationSubscriptionScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -11453,6 +13519,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
    * Reference to a field of type 'BigInt'
    */
   export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
@@ -11467,16 +13547,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Float'
+   * Reference to a field of type 'NotificationPlatform'
    */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+  export type EnumNotificationPlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationPlatform'>
     
 
 
   /**
-   * Reference to a field of type 'Float[]'
+   * Reference to a field of type 'NotificationPlatform[]'
    */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+  export type ListEnumNotificationPlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationPlatform[]'>
     
   /**
    * Deep Input Types
@@ -11499,6 +13579,8 @@ export namespace Prisma {
     withdrawn?: StringNullableFilter<"Stream"> | string | null
     legacy?: BoolFilter<"Stream"> | boolean
     migrated?: BoolFilter<"Stream"> | boolean
+    isPrivate?: BoolFilter<"Stream"> | boolean
+    createdAt?: DateTimeFilter<"Stream"> | Date | string
   }
 
   export type StreamOrderByWithRelationInput = {
@@ -11514,6 +13596,8 @@ export namespace Prisma {
     withdrawn?: SortOrderInput | SortOrder
     legacy?: SortOrder
     migrated?: SortOrder
+    isPrivate?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type StreamWhereUniqueInput = Prisma.AtLeast<{
@@ -11532,6 +13616,8 @@ export namespace Prisma {
     withdrawn?: StringNullableFilter<"Stream"> | string | null
     legacy?: BoolFilter<"Stream"> | boolean
     migrated?: BoolFilter<"Stream"> | boolean
+    isPrivate?: BoolFilter<"Stream"> | boolean
+    createdAt?: DateTimeFilter<"Stream"> | Date | string
   }, "id" | "streamId" | "txHash">
 
   export type StreamOrderByWithAggregationInput = {
@@ -11547,6 +13633,8 @@ export namespace Prisma {
     withdrawn?: SortOrderInput | SortOrder
     legacy?: SortOrder
     migrated?: SortOrder
+    isPrivate?: SortOrder
+    createdAt?: SortOrder
     _count?: StreamCountOrderByAggregateInput
     _avg?: StreamAvgOrderByAggregateInput
     _max?: StreamMaxOrderByAggregateInput
@@ -11570,6 +13658,62 @@ export namespace Prisma {
     withdrawn?: StringNullableWithAggregatesFilter<"Stream"> | string | null
     legacy?: BoolWithAggregatesFilter<"Stream"> | boolean
     migrated?: BoolWithAggregatesFilter<"Stream"> | boolean
+    isPrivate?: BoolWithAggregatesFilter<"Stream"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Stream"> | Date | string
+  }
+
+  export type TokenPriceWhereInput = {
+    AND?: TokenPriceWhereInput | TokenPriceWhereInput[]
+    OR?: TokenPriceWhereInput[]
+    NOT?: TokenPriceWhereInput | TokenPriceWhereInput[]
+    tokenAddress?: StringFilter<"TokenPrice"> | string
+    symbol?: StringFilter<"TokenPrice"> | string
+    decimals?: IntFilter<"TokenPrice"> | number
+    priceUsd?: FloatFilter<"TokenPrice"> | number
+    updatedAt?: DateTimeFilter<"TokenPrice"> | Date | string
+  }
+
+  export type TokenPriceOrderByWithRelationInput = {
+    tokenAddress?: SortOrder
+    symbol?: SortOrder
+    decimals?: SortOrder
+    priceUsd?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TokenPriceWhereUniqueInput = Prisma.AtLeast<{
+    tokenAddress?: string
+    AND?: TokenPriceWhereInput | TokenPriceWhereInput[]
+    OR?: TokenPriceWhereInput[]
+    NOT?: TokenPriceWhereInput | TokenPriceWhereInput[]
+    symbol?: StringFilter<"TokenPrice"> | string
+    decimals?: IntFilter<"TokenPrice"> | number
+    priceUsd?: FloatFilter<"TokenPrice"> | number
+    updatedAt?: DateTimeFilter<"TokenPrice"> | Date | string
+  }, "tokenAddress">
+
+  export type TokenPriceOrderByWithAggregationInput = {
+    tokenAddress?: SortOrder
+    symbol?: SortOrder
+    decimals?: SortOrder
+    priceUsd?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TokenPriceCountOrderByAggregateInput
+    _avg?: TokenPriceAvgOrderByAggregateInput
+    _max?: TokenPriceMaxOrderByAggregateInput
+    _min?: TokenPriceMinOrderByAggregateInput
+    _sum?: TokenPriceSumOrderByAggregateInput
+  }
+
+  export type TokenPriceScalarWhereWithAggregatesInput = {
+    AND?: TokenPriceScalarWhereWithAggregatesInput | TokenPriceScalarWhereWithAggregatesInput[]
+    OR?: TokenPriceScalarWhereWithAggregatesInput[]
+    NOT?: TokenPriceScalarWhereWithAggregatesInput | TokenPriceScalarWhereWithAggregatesInput[]
+    tokenAddress?: StringWithAggregatesFilter<"TokenPrice"> | string
+    symbol?: StringWithAggregatesFilter<"TokenPrice"> | string
+    decimals?: IntWithAggregatesFilter<"TokenPrice"> | number
+    priceUsd?: FloatWithAggregatesFilter<"TokenPrice"> | number
+    updatedAt?: DateTimeWithAggregatesFilter<"TokenPrice"> | Date | string
   }
 
   export type WebhookWhereInput = {
@@ -12221,6 +14365,74 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"LedgerHash"> | Date | string
   }
 
+  export type NotificationSubscriptionWhereInput = {
+    AND?: NotificationSubscriptionWhereInput | NotificationSubscriptionWhereInput[]
+    OR?: NotificationSubscriptionWhereInput[]
+    NOT?: NotificationSubscriptionWhereInput | NotificationSubscriptionWhereInput[]
+    id?: StringFilter<"NotificationSubscription"> | string
+    stellarAddress?: StringFilter<"NotificationSubscription"> | string
+    platform?: EnumNotificationPlatformFilter<"NotificationSubscription"> | $Enums.NotificationPlatform
+    webhookUrl?: StringNullableFilter<"NotificationSubscription"> | string | null
+    chatId?: StringNullableFilter<"NotificationSubscription"> | string | null
+    isActive?: BoolFilter<"NotificationSubscription"> | boolean
+    createdAt?: DateTimeFilter<"NotificationSubscription"> | Date | string
+    updatedAt?: DateTimeFilter<"NotificationSubscription"> | Date | string
+  }
+
+  export type NotificationSubscriptionOrderByWithRelationInput = {
+    id?: SortOrder
+    stellarAddress?: SortOrder
+    platform?: SortOrder
+    webhookUrl?: SortOrderInput | SortOrder
+    chatId?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NotificationSubscriptionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    stellarAddress_platform?: NotificationSubscriptionStellarAddressPlatformCompoundUniqueInput
+    AND?: NotificationSubscriptionWhereInput | NotificationSubscriptionWhereInput[]
+    OR?: NotificationSubscriptionWhereInput[]
+    NOT?: NotificationSubscriptionWhereInput | NotificationSubscriptionWhereInput[]
+    stellarAddress?: StringFilter<"NotificationSubscription"> | string
+    platform?: EnumNotificationPlatformFilter<"NotificationSubscription"> | $Enums.NotificationPlatform
+    webhookUrl?: StringNullableFilter<"NotificationSubscription"> | string | null
+    chatId?: StringNullableFilter<"NotificationSubscription"> | string | null
+    isActive?: BoolFilter<"NotificationSubscription"> | boolean
+    createdAt?: DateTimeFilter<"NotificationSubscription"> | Date | string
+    updatedAt?: DateTimeFilter<"NotificationSubscription"> | Date | string
+  }, "id" | "stellarAddress_platform">
+
+  export type NotificationSubscriptionOrderByWithAggregationInput = {
+    id?: SortOrder
+    stellarAddress?: SortOrder
+    platform?: SortOrder
+    webhookUrl?: SortOrderInput | SortOrder
+    chatId?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: NotificationSubscriptionCountOrderByAggregateInput
+    _max?: NotificationSubscriptionMaxOrderByAggregateInput
+    _min?: NotificationSubscriptionMinOrderByAggregateInput
+  }
+
+  export type NotificationSubscriptionScalarWhereWithAggregatesInput = {
+    AND?: NotificationSubscriptionScalarWhereWithAggregatesInput | NotificationSubscriptionScalarWhereWithAggregatesInput[]
+    OR?: NotificationSubscriptionScalarWhereWithAggregatesInput[]
+    NOT?: NotificationSubscriptionScalarWhereWithAggregatesInput | NotificationSubscriptionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"NotificationSubscription"> | string
+    stellarAddress?: StringWithAggregatesFilter<"NotificationSubscription"> | string
+    platform?: EnumNotificationPlatformWithAggregatesFilter<"NotificationSubscription"> | $Enums.NotificationPlatform
+    webhookUrl?: StringNullableWithAggregatesFilter<"NotificationSubscription"> | string | null
+    chatId?: StringNullableWithAggregatesFilter<"NotificationSubscription"> | string | null
+    isActive?: BoolWithAggregatesFilter<"NotificationSubscription"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"NotificationSubscription"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"NotificationSubscription"> | Date | string
+  }
+
   export type StreamCreateInput = {
     id?: string
     streamId?: string | null
@@ -12234,6 +14446,8 @@ export namespace Prisma {
     withdrawn?: string | null
     legacy?: boolean
     migrated?: boolean
+    isPrivate?: boolean
+    createdAt?: Date | string
   }
 
   export type StreamUncheckedCreateInput = {
@@ -12249,6 +14463,8 @@ export namespace Prisma {
     withdrawn?: string | null
     legacy?: boolean
     migrated?: boolean
+    isPrivate?: boolean
+    createdAt?: Date | string
   }
 
   export type StreamUpdateInput = {
@@ -12264,6 +14480,8 @@ export namespace Prisma {
     withdrawn?: NullableStringFieldUpdateOperationsInput | string | null
     legacy?: BoolFieldUpdateOperationsInput | boolean
     migrated?: BoolFieldUpdateOperationsInput | boolean
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StreamUncheckedUpdateInput = {
@@ -12279,6 +14497,8 @@ export namespace Prisma {
     withdrawn?: NullableStringFieldUpdateOperationsInput | string | null
     legacy?: BoolFieldUpdateOperationsInput | boolean
     migrated?: BoolFieldUpdateOperationsInput | boolean
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StreamCreateManyInput = {
@@ -12294,6 +14514,8 @@ export namespace Prisma {
     withdrawn?: string | null
     legacy?: boolean
     migrated?: boolean
+    isPrivate?: boolean
+    createdAt?: Date | string
   }
 
   export type StreamUpdateManyMutationInput = {
@@ -12309,6 +14531,8 @@ export namespace Prisma {
     withdrawn?: NullableStringFieldUpdateOperationsInput | string | null
     legacy?: BoolFieldUpdateOperationsInput | boolean
     migrated?: BoolFieldUpdateOperationsInput | boolean
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StreamUncheckedUpdateManyInput = {
@@ -12324,6 +14548,64 @@ export namespace Prisma {
     withdrawn?: NullableStringFieldUpdateOperationsInput | string | null
     legacy?: BoolFieldUpdateOperationsInput | boolean
     migrated?: BoolFieldUpdateOperationsInput | boolean
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TokenPriceCreateInput = {
+    tokenAddress: string
+    symbol: string
+    decimals?: number
+    priceUsd?: number
+    updatedAt?: Date | string
+  }
+
+  export type TokenPriceUncheckedCreateInput = {
+    tokenAddress: string
+    symbol: string
+    decimals?: number
+    priceUsd?: number
+    updatedAt?: Date | string
+  }
+
+  export type TokenPriceUpdateInput = {
+    tokenAddress?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    decimals?: IntFieldUpdateOperationsInput | number
+    priceUsd?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TokenPriceUncheckedUpdateInput = {
+    tokenAddress?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    decimals?: IntFieldUpdateOperationsInput | number
+    priceUsd?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TokenPriceCreateManyInput = {
+    tokenAddress: string
+    symbol: string
+    decimals?: number
+    priceUsd?: number
+    updatedAt?: Date | string
+  }
+
+  export type TokenPriceUpdateManyMutationInput = {
+    tokenAddress?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    decimals?: IntFieldUpdateOperationsInput | number
+    priceUsd?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TokenPriceUncheckedUpdateManyInput = {
+    tokenAddress?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    decimals?: IntFieldUpdateOperationsInput | number
+    priceUsd?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type WebhookCreateInput = {
@@ -13061,6 +15343,83 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type NotificationSubscriptionCreateInput = {
+    id?: string
+    stellarAddress: string
+    platform: $Enums.NotificationPlatform
+    webhookUrl?: string | null
+    chatId?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NotificationSubscriptionUncheckedCreateInput = {
+    id?: string
+    stellarAddress: string
+    platform: $Enums.NotificationPlatform
+    webhookUrl?: string | null
+    chatId?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NotificationSubscriptionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stellarAddress?: StringFieldUpdateOperationsInput | string
+    platform?: EnumNotificationPlatformFieldUpdateOperationsInput | $Enums.NotificationPlatform
+    webhookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    chatId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationSubscriptionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stellarAddress?: StringFieldUpdateOperationsInput | string
+    platform?: EnumNotificationPlatformFieldUpdateOperationsInput | $Enums.NotificationPlatform
+    webhookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    chatId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationSubscriptionCreateManyInput = {
+    id?: string
+    stellarAddress: string
+    platform: $Enums.NotificationPlatform
+    webhookUrl?: string | null
+    chatId?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NotificationSubscriptionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stellarAddress?: StringFieldUpdateOperationsInput | string
+    platform?: EnumNotificationPlatformFieldUpdateOperationsInput | $Enums.NotificationPlatform
+    webhookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    chatId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationSubscriptionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stellarAddress?: StringFieldUpdateOperationsInput | string
+    platform?: EnumNotificationPlatformFieldUpdateOperationsInput | $Enums.NotificationPlatform
+    webhookUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    chatId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -13114,6 +15473,17 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -13132,6 +15502,8 @@ export namespace Prisma {
     withdrawn?: SortOrder
     legacy?: SortOrder
     migrated?: SortOrder
+    isPrivate?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type StreamAvgOrderByAggregateInput = {
@@ -13151,6 +15523,8 @@ export namespace Prisma {
     withdrawn?: SortOrder
     legacy?: SortOrder
     migrated?: SortOrder
+    isPrivate?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type StreamMinOrderByAggregateInput = {
@@ -13166,6 +15540,8 @@ export namespace Prisma {
     withdrawn?: SortOrder
     legacy?: SortOrder
     migrated?: SortOrder
+    isPrivate?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type StreamSumOrderByAggregateInput = {
@@ -13242,7 +15618,7 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type DateTimeFilter<$PrismaModel = never> = {
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
     notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -13250,7 +15626,98 @@ export namespace Prisma {
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type TokenPriceCountOrderByAggregateInput = {
+    tokenAddress?: SortOrder
+    symbol?: SortOrder
+    decimals?: SortOrder
+    priceUsd?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TokenPriceAvgOrderByAggregateInput = {
+    decimals?: SortOrder
+    priceUsd?: SortOrder
+  }
+
+  export type TokenPriceMaxOrderByAggregateInput = {
+    tokenAddress?: SortOrder
+    symbol?: SortOrder
+    decimals?: SortOrder
+    priceUsd?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TokenPriceMinOrderByAggregateInput = {
+    tokenAddress?: SortOrder
+    symbol?: SortOrder
+    decimals?: SortOrder
+    priceUsd?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TokenPriceSumOrderByAggregateInput = {
+    decimals?: SortOrder
+    priceUsd?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type WebhookCountOrderByAggregateInput = {
@@ -13280,31 +15747,6 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type SyncStateCountOrderByAggregateInput = {
     id?: SortOrder
     lastLedgerSequence?: SortOrder
@@ -13328,22 +15770,6 @@ export namespace Prisma {
   export type SyncStateSumOrderByAggregateInput = {
     id?: SortOrder
     lastLedgerSequence?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type BigIntNullableFilter<$PrismaModel = never> = {
@@ -13768,6 +16194,61 @@ export namespace Prisma {
     sequence?: SortOrder
   }
 
+  export type EnumNotificationPlatformFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationPlatform | EnumNotificationPlatformFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationPlatform[] | ListEnumNotificationPlatformFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationPlatform[] | ListEnumNotificationPlatformFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationPlatformFilter<$PrismaModel> | $Enums.NotificationPlatform
+  }
+
+  export type NotificationSubscriptionStellarAddressPlatformCompoundUniqueInput = {
+    stellarAddress: string
+    platform: $Enums.NotificationPlatform
+  }
+
+  export type NotificationSubscriptionCountOrderByAggregateInput = {
+    id?: SortOrder
+    stellarAddress?: SortOrder
+    platform?: SortOrder
+    webhookUrl?: SortOrder
+    chatId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NotificationSubscriptionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    stellarAddress?: SortOrder
+    platform?: SortOrder
+    webhookUrl?: SortOrder
+    chatId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NotificationSubscriptionMinOrderByAggregateInput = {
+    id?: SortOrder
+    stellarAddress?: SortOrder
+    platform?: SortOrder
+    webhookUrl?: SortOrder
+    chatId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumNotificationPlatformWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationPlatform | EnumNotificationPlatformFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationPlatform[] | ListEnumNotificationPlatformFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationPlatform[] | ListEnumNotificationPlatformFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationPlatformWithAggregatesFilter<$PrismaModel> | $Enums.NotificationPlatform
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationPlatformFilter<$PrismaModel>
+    _max?: NestedEnumNotificationPlatformFilter<$PrismaModel>
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -13804,6 +16285,14 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type NullableBigIntFieldUpdateOperationsInput = {
     set?: bigint | number | null
     increment?: bigint | number
@@ -13822,6 +16311,10 @@ export namespace Prisma {
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+  }
+
+  export type EnumNotificationPlatformFieldUpdateOperationsInput = {
+    set?: $Enums.NotificationPlatform
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -13873,6 +16366,17 @@ export namespace Prisma {
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedDateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -13965,17 +16469,6 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -13988,6 +16481,17 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -14006,7 +16510,7 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type NestedFloatFilter<$PrismaModel = never> = {
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
     notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -14014,7 +16518,12 @@ export namespace Prisma {
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type NestedBigIntNullableFilter<$PrismaModel = never> = {
@@ -14096,6 +16605,23 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumNotificationPlatformFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationPlatform | EnumNotificationPlatformFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationPlatform[] | ListEnumNotificationPlatformFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationPlatform[] | ListEnumNotificationPlatformFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationPlatformFilter<$PrismaModel> | $Enums.NotificationPlatform
+  }
+
+  export type NestedEnumNotificationPlatformWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationPlatform | EnumNotificationPlatformFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationPlatform[] | ListEnumNotificationPlatformFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationPlatform[] | ListEnumNotificationPlatformFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationPlatformWithAggregatesFilter<$PrismaModel> | $Enums.NotificationPlatform
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationPlatformFilter<$PrismaModel>
+    _max?: NestedEnumNotificationPlatformFilter<$PrismaModel>
+  }
+
 
 
   /**
@@ -14105,6 +16631,10 @@ export namespace Prisma {
      * @deprecated Use StreamDefaultArgs instead
      */
     export type StreamArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = StreamDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use TokenPriceDefaultArgs instead
+     */
+    export type TokenPriceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = TokenPriceDefaultArgs<ExtArgs>
     /**
      * @deprecated Use WebhookDefaultArgs instead
      */
@@ -14141,6 +16671,10 @@ export namespace Prisma {
      * @deprecated Use LedgerHashDefaultArgs instead
      */
     export type LedgerHashArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = LedgerHashDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use NotificationSubscriptionDefaultArgs instead
+     */
+    export type NotificationSubscriptionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = NotificationSubscriptionDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany
