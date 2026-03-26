@@ -37,4 +37,6 @@ pub enum Error {
     AssetNotWhitelisted = 29,
     /// penalty_bps exceeds 10000 (100%)
     InvalidPenalty = 30,
+    /// migrate_stream is blocked; standard V2 streams remain active.
+    MigrationPaused = 31,
 }

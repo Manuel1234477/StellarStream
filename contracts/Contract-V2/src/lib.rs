@@ -158,6 +158,9 @@ impl Contract {
         caller: Address,
     ) -> Result<u64, Error> {
         Self::require_not_paused(&env)?;
+        if storage::is_migration_paused(&env) {
+            return Err(Error::MigrationPaused);
+        }
         caller.require_auth();
 
         let v1_client = V1Client::new(&env, &v1_contract);
@@ -699,6 +702,44 @@ impl Contract {
 
     pub fn is_paused(env: Env) -> bool {
         storage::is_paused(&env)
+    }
+
+    // ----------------------------------------------------------------
+    // Issue: Migration Pause — granular security control
+    // ----------------------------------------------------------------
+
+    /// Pause or unpause only the migration path, leaving standard V2 streams
+    /// fully operational. Admin-only. Emits a `mig_pause` or `mig_unpause`
+    /// event so off-chain monitors can react immediately.
+    pub fn toggle_migration_pause(env: Env, paused: bool) -> Result<(), Error> {
+        let admin = storage::try_get_admin(&env)?;
+        admin.require_auth();
+        storage::set_migration_paused(&env, paused);
+
+        let now = env.ledger().timestamp();
+        let action = if paused {
+            symbol_short!("mig_pause")
+        } else {
+            symbol_short!("mig_unpaus")
+        };
+        let mut data = Vec::new(&env);
+        data.push_back(admin.clone().into_val(&env));
+        data.push_back(now.into_val(&env));
+        env.events().publish(
+            (action, admin.clone()),
+            NebulaEvent {
+                version: 2,
+                timestamp: now,
+                action,
+                data,
+            },
+        );
+        Ok(())
+    }
+
+    /// Returns true if the migration path is currently paused.
+    pub fn is_migration_paused(env: Env) -> bool {
+        storage::is_migration_paused(&env)
     }
 
     // ----------------------------------------------------------------

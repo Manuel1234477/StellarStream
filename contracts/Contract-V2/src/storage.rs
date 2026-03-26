@@ -76,6 +76,10 @@ pub enum DataKeyV2 {
     FeeBps, // 10
     /// Verified assets supported for V2 stream creation
     WhitelistedAsset(Address), // 11
+
+    // -- Migration pause -----------------------------------------
+    /// When true, migrate_stream is blocked while standard V2 ops remain live.
+    MigrationPaused, // 12
 }
 
 /// Global stream counter.
@@ -359,6 +363,26 @@ pub fn get_health(env: &Env) -> crate::types::ProtocolHealthV2 {
         active_v2_users: env.storage().instance().get(&V2_USER_COUNT).unwrap_or(0),
         total_v2_streams: env.storage().instance().get(&STREAM_COUNT_V2).unwrap_or(0),
     }
+}
+
+// ----------------------------------------------------------------
+// instance() helpers — Migration pause
+// ----------------------------------------------------------------
+
+/// Returns true if migration-only pause is active.
+pub fn is_migration_paused(env: &Env) -> bool {
+    env.storage()
+        .instance()
+        .get(&DataKeyV2::MigrationPaused)
+        .unwrap_or(false)
+}
+
+/// Sets the migration-only paused state.
+pub fn set_migration_paused(env: &Env, paused: bool) {
+    env.storage()
+        .instance()
+        .set(&DataKeyV2::MigrationPaused, &paused);
+    bump_instance(env);
 }
 
 // ----------------------------------------------------------------
