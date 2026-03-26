@@ -5,6 +5,8 @@ import { ShieldAlert, ArrowLeftRight } from "lucide-react";
 import { useProtocolStatus } from "@/lib/use-protocol-status";
 import PrivacyShieldToggle from "@/components/privacy-shield-toggle";
 import SwapAndStream from "@/components/swap-and-stream";
+import { InsufficientXLMCard, NetworkCongestedCard } from "@/components/error-recovery-cards";
+import type { RecoveryErrorType } from "@/components/error-recovery-cards";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface FormData {
@@ -702,10 +704,18 @@ function Step3({
   form,
   onSign,
   signing,
+  recoveryError,
+  onDismissRecovery,
+  onAcceptFee,
+  onSwapToXLM,
 }: {
   form: FormData;
   onSign: () => void;
   signing: boolean;
+  recoveryError?: RecoveryErrorType | null;
+  onDismissRecovery?: () => void;
+  onAcceptFee?: (fee: number) => void;
+  onSwapToXLM?: () => void;
 }) {
   const asset = ASSETS.find((a) => a.symbol === form.asset);
   const durationSeconds =
@@ -770,6 +780,25 @@ function Step3({
           Ensure all details are correct before signing.
         </p>
       </div>
+
+      {/* ── Recovery cards ── */}
+      {recoveryError === "insufficient-xlm" && (
+        <InsufficientXLMCard
+          currentBalance={1.2}
+          requiredBalance={5}
+          onSwap={onSwapToXLM}
+          onDismiss={onDismissRecovery}
+        />
+      )}
+      {recoveryError === "network-congested" && (
+        <NetworkCongestedCard
+          baseFee={100}
+          suggestedFee={500}
+          onAcceptFee={onAcceptFee}
+          onRetry={onSign}
+          onDismiss={onDismissRecovery}
+        />
+      )}
 
       <button
         onClick={onSign}
@@ -860,6 +889,8 @@ export default function CreateStreamPage() {
   const [signing, setSigning] = useState(false);
   const [success, setSuccess] = useState(false);
   const [animKey, setAnimKey] = useState(0);
+  const [recoveryError, setRecoveryError] = useState<RecoveryErrorType | null>(null);
+  const [signAttempts, setSignAttempts] = useState(0);
 
   // ── Emergency gate (#426) ────────────────────────────────────────────────────
   const { isEmergency } = useProtocolStatus();
@@ -907,9 +938,23 @@ export default function CreateStreamPage() {
 
   const handleSign = async () => {
     setSigning(true);
+    setRecoveryError(null);
     await new Promise((r) => setTimeout(r, 2200));
     setSigning(false);
+
+    // Simulate recovery errors on first two attempts for demo purposes
+    const attempt = signAttempts + 1;
+    setSignAttempts(attempt);
+    if (attempt === 1) { setRecoveryError("insufficient-xlm"); return; }
+    if (attempt === 2) { setRecoveryError("network-congested"); return; }
+
     setSuccess(true);
+  };
+
+  const handleAcceptFee = (_fee: number) => {
+    // Fee accepted — clear the card and re-attempt sign
+    setRecoveryError(null);
+    handleSign();
   };
 
   const reset = () => {
@@ -1006,7 +1051,7 @@ export default function CreateStreamPage() {
 
                   {step === 1 && <Step1 form={form} update={update} />}
                   {step === 2 && <Step2 form={form} update={update} />}
-                  {step === 3 && <Step3 form={form} onSign={handleSign} signing={signing} />}
+                  {step === 3 && <Step3 form={form} onSign={handleSign} signing={signing} recoveryError={recoveryError} onDismissRecovery={() => setRecoveryError(null)} onAcceptFee={handleAcceptFee} onSwapToXLM={() => { setStep(1); setAnimKey((k) => k + 1); }} />}
 
                   {step < 3 && (
                     <div className="flex gap-3 mt-8">
