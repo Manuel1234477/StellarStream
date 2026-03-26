@@ -50,6 +50,13 @@ pub trait ComplianceTrait {
     fn is_allowed(env: Env, addr: Address) -> bool;
 }
 
+/// Nebula-DAO governance token interface.
+/// Used to query an address's token balance as a proxy for voting power.
+#[soroban_sdk::contractclient(name = "DaoTokenClient")]
+pub trait DaoTokenTrait {
+    fn balance(env: Env, id: Address) -> i128;
+}
+
 #[contractimpl]
 impl Contract {
     // ----------------------------------------------------------------
@@ -2413,6 +2420,190 @@ impl Contract {
     pub fn get_withdrawal_nonce(env: Env, beneficiary: Address, stream_id: u64) -> u64 {
         let nonce_key = (symbol_short!("W_NONCE"), beneficiary, stream_id);
         env.storage().instance().get(&nonce_key).unwrap_or(0u64)
+    }
+
+    // ----------------------------------------------------------------
+    // Nebula-DAO Vote-Weight Integration (Issue: Governance)
+    // ----------------------------------------------------------------
+
+    /// Set the DAO governance token contract address. Admin-only.
+    pub fn set_dao_token(env: Env, token: Address) -> Result<(), Error> {
+        storage::try_get_admin(&env)?.require_auth();
+        storage::set_dao_token(&env, &token);
+        Ok(())
+    }
+
+    /// Set the minimum voting power threshold for treasury splits. Admin-only.
+    pub fn set_voting_threshold(env: Env, threshold: i128) -> Result<(), Error> {
+        storage::try_get_admin(&env)?.require_auth();
+        storage::set_voting_threshold(&env, threshold);
+        Ok(())
+    }
+
+    /// Query the DAO token balance of `addr` as a proxy for voting power.
+    /// Returns `Err(DaoTokenNotSet)` if no DAO token has been configured.
+    pub fn check_voting_power(env: Env, addr: Address) -> Result<i128, Error> {
+        let dao_token = storage::get_dao_token(&env).ok_or(Error::DaoTokenNotSet)?;
+        let client = DaoTokenClient::new(&env, &dao_token);
+        Ok(client.balance(&addr))
+    }
+
+    /// Execute an admin-only split from the Treasury account.
+    ///
+    /// The caller must hold DAO token balance >= the configured voting threshold.
+    /// Funds are transferred from the treasury address to each recipient.
+    ///
+    /// # Parameters
+    /// - `caller`: The address initiating the split (must have sufficient voting power).
+    /// - `token`: The token to distribute.
+    /// - `recipients`: List of recipient addresses.
+    /// - `amounts`: Corresponding amounts for each recipient.
+    pub fn treasury_split_by_vote(
+        env: Env,
+        caller: Address,
+        token: Address,
+        recipients: Vec<Address>,
+        amounts: Vec<i128>,
+    ) -> Result<(), Error> {
+        caller.require_auth();
+
+        // Check voting power
+        let voting_power = Self::check_voting_power(env.clone(), caller.clone())?;
+        let threshold = storage::get_voting_threshold(&env);
+        if voting_power < threshold {
+            return Err(Error::InsufficientVotingPower);
+        }
+
+        let treasury = storage::get_treasury(&env).ok_or(Error::NoTreasury)?;
+        let token_client = soroban_sdk::token::TokenClient::new(&env, &token);
+
+        for i in 0..recipients.len() {
+            let recipient = recipients.get(i).unwrap();
+            let amount = amounts.get(i).unwrap();
+            token_client.transfer(&treasury, &recipient, &amount);
+        }
+
+        let now = env.ledger().timestamp();
+        let mut data = Vec::new(&env);
+        data.push_back(caller.into_val(&env));
+        data.push_back(token.clone().into_val(&env));
+        data.push_back(now.into_val(&env));
+
+        env.events().publish(
+            (symbol_short!("dao_split"), token),
+            NebulaEvent {
+                version: 2,
+                timestamp: now,
+                action: symbol_short!("dao_split"),
+                data,
+            },
+        );
+
+        Ok(())
+    }
+
+    // ----------------------------------------------------------------
+    // Timelocked Treasury Splits (Issue: Governance Security)
+    // ----------------------------------------------------------------
+
+    /// Initiate a treasury split. Starts the 48-hour community veto window.
+    ///
+    /// Returns the `split_id` that must be passed to `execute_treasury_split`
+    /// after the timelock expires.
+    pub fn initiate_treasury_split(
+        env: Env,
+        initiator: Address,
+        token: Address,
+        recipients: Vec<Address>,
+        amounts: Vec<i128>,
+    ) -> Result<u64, Error> {
+        initiator.require_auth();
+        storage::try_get_admin(&env)?.require_auth();
+
+        let unlock_time = env.ledger().timestamp() + storage::ADMIN_DELAY;
+        let split_id = storage::next_treasury_split_id(&env);
+
+        storage::set_pending_treasury_split(
+            &env,
+            split_id,
+            &storage::PendingTreasurySplit {
+                initiator: initiator.clone(),
+                token: token.clone(),
+                recipients,
+                amounts,
+                unlock_time,
+                executed: false,
+            },
+        );
+
+        let now = env.ledger().timestamp();
+        let mut data = Vec::new(&env);
+        data.push_back(split_id.into_val(&env));
+        data.push_back(initiator.into_val(&env));
+        data.push_back(token.into_val(&env));
+        data.push_back(unlock_time.into_val(&env));
+
+        env.events().publish(
+            (symbol_short!("ts_init"), split_id),
+            NebulaEvent {
+                version: 2,
+                timestamp: now,
+                action: symbol_short!("ts_init"),
+                data,
+            },
+        );
+
+        Ok(split_id)
+    }
+
+    /// Execute a pending treasury split after the 48-hour timelock has elapsed.
+    ///
+    /// Reverts with `TreasurySplitTimelocked` if called too early, or
+    /// `TreasurySplitAlreadyExecuted` if already executed.
+    pub fn execute_treasury_split(env: Env, caller: Address, split_id: u64) -> Result<(), Error> {
+        caller.require_auth();
+        storage::try_get_admin(&env)?.require_auth();
+
+        let mut split = storage::get_pending_treasury_split(&env, split_id)
+            .ok_or(Error::PendingTreasurySplitNotFound)?;
+
+        if split.executed {
+            return Err(Error::TreasurySplitAlreadyExecuted);
+        }
+
+        if env.ledger().timestamp() < split.unlock_time {
+            return Err(Error::TreasurySplitTimelocked);
+        }
+
+        let treasury = storage::get_treasury(&env).ok_or(Error::NoTreasury)?;
+        let token_client = soroban_sdk::token::TokenClient::new(&env, &split.token);
+
+        for i in 0..split.recipients.len() {
+            let recipient = split.recipients.get(i).unwrap();
+            let amount = split.amounts.get(i).unwrap();
+            token_client.transfer(&treasury, &recipient, &amount);
+        }
+
+        split.executed = true;
+        storage::set_pending_treasury_split(&env, split_id, &split);
+
+        let now = env.ledger().timestamp();
+        let mut data = Vec::new(&env);
+        data.push_back(split_id.into_val(&env));
+        data.push_back(caller.into_val(&env));
+        data.push_back(now.into_val(&env));
+
+        env.events().publish(
+            (symbol_short!("ts_exec"), split_id),
+            NebulaEvent {
+                version: 2,
+                timestamp: now,
+                action: symbol_short!("ts_exec"),
+                data,
+            },
+        );
+
+        Ok(())
     }
 }
 

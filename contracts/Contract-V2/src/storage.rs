@@ -98,6 +98,18 @@ pub enum DataKeyV2 {
     /// Persistent flag per V1 stream ID. Set to true after a successful migration
     /// to prevent replay attacks (migrating the same V1 stream twice).
     V1MigratedMap(u64), // 16
+
+    // -- Nebula-DAO Vote-Weight Integration (Issue: Governance) ------
+    /// Address of the DAO governance token contract
+    DaoToken, // 17
+    /// Minimum voting power required to execute admin-only treasury splits
+    VotingThreshold, // 18
+
+    // -- Timelocked Treasury Splits (Issue: Governance Security) -----
+    /// Pending treasury split by ID
+    PendingTreasurySplit(u64), // 19
+    /// Counter for pending treasury split IDs
+    TreasurySplitCount, // 20
 }
 
 /// Global stream counter.
@@ -661,5 +673,78 @@ pub fn remove_pending_stream_request(env: &Env, request_id: u64) {
     env.storage()
         .instance()
         .remove(&DataKeyV2::PendingStreamRequest(request_id));
+    bump_instance(env);
+}
+
+// ----------------------------------------------------------------
+// Nebula-DAO Vote-Weight Integration (Issue: Governance)
+// ----------------------------------------------------------------
+
+pub fn set_dao_token(env: &Env, token: &Address) {
+    env.storage().instance().set(&DataKeyV2::DaoToken, token);
+    bump_instance(env);
+}
+
+pub fn get_dao_token(env: &Env) -> Option<Address> {
+    env.storage().instance().get(&DataKeyV2::DaoToken)
+}
+
+pub fn set_voting_threshold(env: &Env, threshold: i128) {
+    env.storage().instance().set(&DataKeyV2::VotingThreshold, &threshold);
+    bump_instance(env);
+}
+
+pub fn get_voting_threshold(env: &Env) -> i128 {
+    env.storage()
+        .instance()
+        .get(&DataKeyV2::VotingThreshold)
+        .unwrap_or(0)
+}
+
+// ----------------------------------------------------------------
+// Timelocked Treasury Splits (Issue: Governance Security)
+// ----------------------------------------------------------------
+
+/// A pending treasury split waiting out the 48-hour timelock.
+#[contracttype]
+#[derive(Clone, Debug, PartialEq)]
+pub struct PendingTreasurySplit {
+    pub initiator: Address,
+    pub token: Address,
+    pub recipients: Vec<Address>,
+    pub amounts: Vec<i128>,
+    pub unlock_time: u64,
+    pub executed: bool,
+}
+
+pub fn next_treasury_split_id(env: &Env) -> u64 {
+    let id: u64 = env
+        .storage()
+        .instance()
+        .get(&DataKeyV2::TreasurySplitCount)
+        .unwrap_or(0);
+    env.storage()
+        .instance()
+        .set(&DataKeyV2::TreasurySplitCount, &(id + 1));
+    id
+}
+
+pub fn set_pending_treasury_split(env: &Env, split_id: u64, split: &PendingTreasurySplit) {
+    env.storage()
+        .instance()
+        .set(&DataKeyV2::PendingTreasurySplit(split_id), split);
+    bump_instance(env);
+}
+
+pub fn get_pending_treasury_split(env: &Env, split_id: u64) -> Option<PendingTreasurySplit> {
+    env.storage()
+        .instance()
+        .get(&DataKeyV2::PendingTreasurySplit(split_id))
+}
+
+pub fn clear_pending_treasury_split(env: &Env, split_id: u64) {
+    env.storage()
+        .instance()
+        .remove(&DataKeyV2::PendingTreasurySplit(split_id));
     bump_instance(env);
 }

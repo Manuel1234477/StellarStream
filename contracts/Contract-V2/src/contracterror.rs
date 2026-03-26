@@ -61,4 +61,14 @@ pub enum Error {
     EmergencyMode = 41,
     /// V1 stream has already been migrated; replay attack prevented
     AlreadyMigrated = 42,
+    /// Caller's DAO voting power is below the required threshold
+    InsufficientVotingPower = 43,
+    /// DAO token contract address not configured
+    DaoTokenNotSet = 44,
+    /// Treasury split is still within the 48-hour timelock window
+    TreasurySplitTimelocked = 45,
+    /// No pending treasury split found for this ID
+    PendingTreasurySplitNotFound = 46,
+    /// Treasury split has already been executed
+    TreasurySplitAlreadyExecuted = 47,
 }
