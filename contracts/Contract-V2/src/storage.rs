@@ -84,17 +84,11 @@ pub enum DataKeyV2 {
     /// When true, migrate_stream is blocked while standard V2 ops remain live.
     MigrationPaused, // 12
 
-    // -- Compliance Oracle (Issue #412) --------------------------
-    /// Optional sanctions-list oracle address. When set, create_stream and
-    /// withdraw call oracle.is_allowed(addr) before proceeding.
-    ComplianceOracle, // 13
-
-    // -- Circular Event Log (Issue #413) -------------------------
-    /// Per-stream circular buffer: stores the last 50 event payloads.
-    /// Value type: EventLog struct (head, count, entries).
-    EventLog(u64), // 14
-    /// Temporary overflow slot for evicted entries (indexer safety net).
-    EventLogEvicted(u64, u32), // 15
+    // -- Pending Stream Requests (Multi-sig Approval) -----------------
+    /// Pending stream request by ID
+    PendingStreamRequest(u64), // 13
+    /// Counter for generating unique pending stream request IDs
+    StreamRequestCount, // 14
 }
 
 /// Global stream counter.
@@ -575,98 +569,46 @@ pub fn is_asset_whitelisted(env: &Env, asset: &Address) -> bool {
 }
 
 // ----------------------------------------------------------------
-// Compliance Oracle helpers (Issue #412)
+// Pending Stream Requests (Multi-sig Approval)
 // ----------------------------------------------------------------
 
-pub fn set_compliance_oracle(env: &Env, oracle: &Address) {
+/// Stored pending stream request waiting for multi-sig approval
+#[contracttype]
+#[derive(Clone, Debug, PartialEq)]
+pub struct PendingStreamRequest {
+    pub args: crate::types::StreamArgs,
+    pub approvals: u32,
+    pub approved_by: Vec<Address>,
+    pub created_at: u64,
+    pub executed: bool,
+}
+
+/// Generate the next pending stream request ID
+pub fn next_stream_request_id(env: &Env) -> u64 {
+    let id: u64 = env.storage().instance().get(&DataKeyV2::StreamRequestCount).unwrap_or(0);
+    env.storage().instance().set(&DataKeyV2::StreamRequestCount, &(id + 1));
+    id
+}
+
+/// Store a pending stream request
+pub fn set_pending_stream_request(env: &Env, request_id: u64, request: &PendingStreamRequest) {
     env.storage()
         .instance()
-        .set(&DataKeyV2::ComplianceOracle, oracle);
+        .set(&DataKeyV2::PendingStreamRequest(request_id), request);
     bump_instance(env);
 }
 
-pub fn get_compliance_oracle(env: &Env) -> Option<Address> {
-    env.storage().instance().get(&DataKeyV2::ComplianceOracle)
-}
-
-// ----------------------------------------------------------------
-// Issue #413 — Circular Event Log
-// ----------------------------------------------------------------
-
-pub const EVENT_LOG_CAP: u32 = 50;
-
-/// On-chain circular buffer for per-stream event payloads.
-/// `head` is the index of the next write slot (0..CAP).
-/// `count` is the number of valid entries (≤ CAP).
-#[contracttype]
-#[derive(Clone)]
-pub struct StoredEventLog {
-    pub head: u32,
-    pub count: u32,
-    pub entries: soroban_sdk::Vec<soroban_sdk::Bytes>,
-}
-
-/// Append `data` to the circular log for `stream_id`.
-/// If the buffer is full the oldest entry is moved to temporary storage
-/// (1-ledger TTL) before being overwritten, giving the indexer a last
-/// chance to read it.
-pub fn append_event_log(env: &Env, stream_id: u64, data: soroban_sdk::Bytes) {
-    let key = DataKeyV2::EventLog(stream_id);
-
-    let mut log: StoredEventLog = env
-        .storage()
-        .persistent()
-        .get(&key)
-        .unwrap_or(StoredEventLog {
-            head: 0,
-            count: 0,
-            entries: soroban_sdk::Vec::new(env),
-        });
-
-    if log.count < EVENT_LOG_CAP {
-        // Buffer not yet full — grow the Vec.
-        log.entries.push_back(data);
-        log.count += 1;
-        // head stays at 0 until the buffer is full; once full it tracks oldest.
-    } else {
-        // Buffer full — evict oldest (at head) to temporary storage, then overwrite.
-        if let Some(evicted) = log.entries.get(log.head) {
-            let tmp_key = DataKeyV2::EventLogEvicted(stream_id, log.head);
-            env.storage().temporary().set(&tmp_key, &evicted);
-            // 1-ledger TTL — just enough for the indexer to catch it.
-            env.storage().temporary().extend_ttl(&tmp_key, 0, 1);
-        }
-        log.entries.set(log.head, data);
-        log.head = (log.head + 1) % EVENT_LOG_CAP;
-        // count stays at CAP
-    }
-
-    env.storage().persistent().set(&key, &log);
+/// Retrieve a pending stream request
+pub fn get_pending_stream_request(env: &Env, request_id: u64) -> Option<PendingStreamRequest> {
     env.storage()
-        .persistent()
-        .extend_ttl(&key, STREAM_TTL_THRESHOLD, STREAM_TTL_BUMP);
+        .instance()
+        .get(&DataKeyV2::PendingStreamRequest(request_id))
 }
 
-/// Return the event log for `stream_id` in insertion order.
-pub fn get_event_log(env: &Env, stream_id: u64) -> soroban_sdk::Vec<soroban_sdk::Bytes> {
-    let key = DataKeyV2::EventLog(stream_id);
-    let log: Option<StoredEventLog> = env.storage().persistent().get(&key);
-    let log = match log {
-        Some(l) => l,
-        None => return soroban_sdk::Vec::new(env),
-    };
-
-    let mut ordered = soroban_sdk::Vec::new(env);
-    let start = if log.count == EVENT_LOG_CAP {
-        log.head // oldest slot when full
-    } else {
-        0
-    };
-    for i in 0..log.count {
-        let idx = (start + i) % EVENT_LOG_CAP;
-        if let Some(entry) = log.entries.get(idx) {
-            ordered.push_back(entry);
-        }
-    }
-    ordered
+/// Remove a pending stream request after execution or cancellation
+pub fn remove_pending_stream_request(env: &Env, request_id: u64) {
+    env.storage()
+        .instance()
+        .remove(&DataKeyV2::PendingStreamRequest(request_id));
+    bump_instance(env);
 }

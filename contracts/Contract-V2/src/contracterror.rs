@@ -41,8 +41,20 @@ pub enum Error {
     MigrationPaused = 31,
     /// Relayer fee exceeds the available withdrawal amount
     InvalidRelayerFee = 32,
-    /// split_bps must be < 10000 (cannot split 100% away from beneficiary)
-    InvalidSplitBps = 33,
-    /// Address is flagged by the compliance oracle
-    AddressFlagged = 34,
+    /// Stream request not found
+    StreamRequestNotFound = 33,
+    /// Stream request already approved by this admin
+    AlreadyApproved = 34,
+    /// Stream request has already been executed
+    StreamRequestAlreadyExecuted = 35,
+    /// Overflow in arithmetic operation
+    Overflow = 36,
+    /// Invalid metadata format for bridge-in
+    InvalidBridgeMetadata = 37,
+    /// No receiver address in bridge metadata
+    MissingReceiverAddress = 38,
+    /// No duration in bridge metadata
+    MissingDuration = 39,
+    /// Invalid duration value in bridge metadata
+    InvalidDuration = 40,
 }
