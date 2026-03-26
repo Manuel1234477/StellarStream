@@ -28,6 +28,7 @@ import { scheduleSnapshotMaintenance } from "./services/snapshot.scheduler.js";
 import { StaleStreamCleanupWorker } from "./stale-stream-cleanup.worker.js";
 import { DataIntegrityWorker } from "./data-integrity.worker.js";
 import { YieldAccrualWorker } from "./yield-accrual.worker.js";
+import { startWebhookWorker } from "./webhook-dispatcher.worker.js";
 import { bigintSerializer } from "./middleware/bigintSerializer.js";
 import { swaggerSpec } from "./swagger.js";
 import { initializeSchedulers } from "./schedulers.js";
@@ -170,6 +171,7 @@ async function start(): Promise<void> {
   cleanupWorker.start();
   dataIntegrityWorker.start();
   yieldAccrualWorker.start();
+  startWebhookWorker();
   
   // Start background services
   bridgeObserver.start();
