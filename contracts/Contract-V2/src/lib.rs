@@ -3869,8 +3869,8 @@ impl Contract {
         Self::require_not_paused(&env)?;
 
         let n = recipients.len();
-        // Issue #604 — cap raised to 100
-        if n == 0 || n > 100 {
+        // Issue #639 — batch recipient cap raised to 120 to avoid OOM.
+        if n == 0 || n > 120 {
             return Err(Error::BatchTooLarge);
         }
 
@@ -3901,13 +3901,21 @@ impl Contract {
         };
 
         // Issue #604 — validate all amounts before any external call
+        let first_asset = recipients.get(0).unwrap().asset.clone();
+        let mut homogeneous = true;
+
         for entry in recipients.iter() {
             if entry.amount <= 0 {
                 storage::release_lock(&env);
                 return Err(Error::BelowDustThreshold);
             }
+
             // Issue #637 — Asset interface compatibility guard
             Self::ensure_asset_interface(&env, &entry.asset, &from)?;
+
+            if entry.asset != first_asset {
+                homogeneous = false;
+            }
         }
 
         // Issue #602 — collect protocol fee
@@ -3929,9 +3937,6 @@ impl Contract {
         // Issue #604 — detect homogeneous batch: if all entries share the same
         // asset, construct one TokenClient and reuse it across all iterations,
         // avoiding repeated client instantiation overhead.
-        let first_asset = recipients.get(0).unwrap().asset.clone();
-        let homogeneous = recipients.iter().all(|e| e.asset == first_asset);
-
         if homogeneous {
             let token_client = soroban_sdk::token::TokenClient::new(&env, &first_asset);
             for entry in recipients.iter() {
