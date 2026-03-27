@@ -493,3 +493,59 @@ pub struct DexPoolInfo {
     /// Pool fee in basis points (e.g., 30 = 0.3% fee)
     pub fee_bps: u32,
 }
+
+// ----------------------------------------------------------------
+// Issue #377 — Push-Pull Rate Re-balancing
+// ----------------------------------------------------------------
+
+/// Represents a pending rate update proposal for a stream.
+/// This is stored temporarily with a 7-day TTL.
+#[contracttype]
+#[derive(Clone, Debug, PartialEq)]
+pub struct PendingRateUpdate {
+    /// The new proposed rate (amount per second)
+    pub new_rate: i128,
+    /// Unix timestamp when the proposal was created
+    pub proposed_at: u64,
+    /// Address that proposed the change (always the sender)
+    pub proposed_by: Address,
+    /// Original end time before the change
+    pub original_end_time: u64,
+    /// Original total amount before the change
+    pub original_total_amount: i128,
+}
+
+/// Event emitted when a rate update is proposed
+#[contracttype]
+#[derive(Clone, Debug)]
+pub struct RateUpdateProposedEvent {
+    pub stream_id: u64,
+    pub proposed_by: Address,
+    pub current_rate: i128,
+    pub new_rate: i128,
+    pub new_end_time: u64,
+    pub expires_at: u64,
+    pub timestamp: u64,
+}
+
+/// Event emitted when a rate update is accepted
+#[contracttype]
+#[derive(Clone, Debug)]
+pub struct RateUpdateAcceptedEvent {
+    pub stream_id: u64,
+    pub accepted_by: Address,
+    pub new_rate: i128,
+    pub new_end_time: u64,
+    pub remaining_balance: i128,
+    pub timestamp: u64,
+}
+
+/// Event emitted when a rate update proposal is cancelled
+#[contracttype]
+#[derive(Clone, Debug)]
+pub struct RateUpdateCancelledEvent {
+    pub stream_id: u64,
+    pub cancelled_by: Address,
+    pub reason: u32, // 0 = expired, 1 = manually cancelled
+    pub timestamp: u64,
+}

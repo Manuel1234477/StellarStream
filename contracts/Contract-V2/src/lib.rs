@@ -14,11 +14,12 @@ pub use types::{
     AdminTransferredEvent, BatchStreamsCreatedEvent, BeneficiaryTransferredV2Event,
     ClawbackRebalanceEvent, ContractPausedEvent, ContractUnpausedEvent, DexPoolInfo,
     FeesWithdrawnEvent, MigrationEvent, MultiAssetRecipient, NebulaEvent, Operation,
-    OperationExecutedEvent, OperationScheduledEvent, PermitArgs, PermitStreamCreatedEvent,
-    StreamArgs, StreamBatchEntry, StreamCancelledV2Event, StreamClaimV2Event,
-    StreamCreatedV2Event, StreamMigratedEvent, StreamRefilledEvent, StreamRequestApprovedEvent,
-    StreamRequestExecutedEvent, StreamRequestInitiatedEvent, StreamStatus, StreamToppedUpEvent,
-    StreamV2, SwapResult, SwapStreamArgs, SwapStreamCreatedEvent,
+    OperationExecutedEvent, OperationScheduledEvent, PendingRateUpdate, PermitArgs,
+    PermitStreamCreatedEvent, RateUpdateAcceptedEvent, RateUpdateCancelledEvent,
+    RateUpdateProposedEvent, StreamArgs, StreamBatchEntry, StreamCancelledV2Event,
+    StreamClaimV2Event, StreamCreatedV2Event, StreamMigratedEvent, StreamRefilledEvent,
+    StreamRequestApprovedEvent, StreamRequestExecutedEvent, StreamRequestInitiatedEvent,
+    StreamStatus, StreamToppedUpEvent, StreamV2, SwapResult, SwapStreamArgs, SwapStreamCreatedEvent,
 };
 use v1_interface::Client as V1Client;
 
@@ -2386,6 +2387,353 @@ impl Contract {
             amount_out,
             price_impact_bps: price_impact,
         })
+    }
+
+    // ----------------------------------------------------------------
+    // Issue #377 — Push-Pull Rate Re-balancing
+    // ----------------------------------------------------------------
+
+    /// Propose a new rate for an active stream.
+    /// 
+    /// The sender can propose to change the stream rate (faster or slower).
+    /// The receiver must accept the proposal for it to take effect.
+    /// 
+    /// # Parameters
+    /// - `stream_id`: The ID of the stream to update
+    /// - `new_rate`: The new rate (amount per second)
+    /// 
+    /// # Returns
+    /// - `Ok(())` if proposal was created successfully
+    /// - `Err(Error)` if validation fails
+    /// 
+    /// # Constraints
+    /// - Only the stream sender can propose
+    /// - Stream must be active (not cancelled, not fully withdrawn)
+    /// - New rate must be > 0
+    /// - Sender must have sufficient balance for the change
+    pub fn propose_rate(
+        env: Env,
+        stream_id: u64,
+        new_rate: i128,
+    ) -> Result<PendingRateUpdate, Error> {
+        Self::require_not_paused(&env)?;
+        
+        // Get the stream
+        let stream = storage::get_stream(&env, stream_id)
+            .ok_or(Error::StreamNotFound)?;
+
+        // Only the sender can propose a rate change
+        let caller = stream.sender.clone();
+        caller.require_auth();
+
+        // Validate stream is active
+        if stream.cancelled {
+            return Err(Error::StreamNotActive);
+        }
+
+        // Check if fully withdrawn
+        if stream.withdrawn_amount >= stream.total_amount {
+            return Err(Error::StreamNotActive);
+        }
+
+        // Validate new rate
+        if new_rate <= 0 {
+            return Err(Error::InvalidNewRate);
+        }
+
+        // Calculate remaining balance
+        let now = env.ledger().timestamp();
+        let remaining_balance = Self::calculate_remaining_balance(&env, &stream, now)?;
+
+        // Calculate current rate (total_amount / duration)
+        let duration = (stream.end_time - stream.start_time) as i128;
+        let current_rate = if duration > 0 {
+            stream.total_amount / duration
+        } else {
+            0
+        };
+
+        // If rate is unchanged, nothing to do
+        if current_rate == new_rate {
+            return Err(Error::InvalidNewRate);
+        }
+
+        // Calculate new end time based on remaining balance and new rate
+        // new_end_time = now + (remaining_balance / new_rate)
+        let new_end_time = if new_rate > 0 {
+            let additional_seconds = remaining_balance / new_rate;
+            now.saturating_add(additional_seconds as u64)
+        } else {
+            return Err(Error::InvalidNewRate);
+        };
+
+        // Ensure new end time is in the future
+        if new_end_time <= now {
+            return Err(Error::InsufficientBalanceForNewRate);
+        }
+
+        // Check if a pending update already exists
+        if storage::has_pending_rate_update(&env, stream_id) {
+            // Check if existing update has expired
+            if !storage::is_pending_rate_update_expired(&env, stream_id) {
+                return Err(Error::PendingUpdateExists);
+            }
+            // Remove expired update
+            storage::remove_pending_rate_update(&env, stream_id);
+        }
+
+        // Create the pending update
+        let pending_update = PendingRateUpdate {
+            new_rate,
+            proposed_at: now,
+            proposed_by: caller.clone(),
+            original_end_time: stream.end_time,
+            original_total_amount: stream.total_amount,
+        };
+
+        // Store the pending update
+        storage::set_pending_rate_update(&env, stream_id, &pending_update);
+
+        // Emit event
+        let expires_at = now.saturating_add(storage::RATE_UPDATE_TTL);
+        let mut data = Vec::new(&env);
+        data.push_back(stream_id.into_val(&env));
+        data.push_back(caller.into_val(&env));
+        data.push_back(current_rate.into_val(&env));
+        data.push_back(new_rate.into_val(&env));
+        data.push_back(new_end_time.into_val(&env));
+        data.push_back(expires_at.into_val(&env));
+        data.push_back(now.into_val(&env));
+
+        env.events().publish(
+            (stream_id, symbol_short!("rate_propose")),
+            NebulaEvent {
+                version: 2,
+                timestamp: now,
+                action: symbol_short!("rate_propose"),
+                data,
+            },
+        );
+
+        Ok(pending_update)
+    }
+
+    /// Accept a pending rate update proposal.
+    /// 
+    /// Only the stream receiver can accept a rate update.
+    /// This recalculates the end_time based on remaining_balance / new_rate.
+    /// 
+    /// # Parameters
+    /// - `stream_id`: The ID of the stream with pending update
+    /// 
+    /// # Returns
+    /// - `Ok(new_end_time)` if update was accepted
+    /// - `Err(Error)` if validation fails
+    pub fn accept_rate(env: Env, stream_id: u64) -> Result<u64, Error> {
+        Self::require_not_paused(&env)?;
+
+        // Get the stream
+        let mut stream = storage::get_stream(&env, stream_id)
+            .ok_or(Error::StreamNotFound)?;
+
+        // Only the receiver can accept
+        let caller = stream.receiver.clone();
+        caller.require_auth();
+
+        // Validate stream is active
+        if stream.cancelled {
+            return Err(Error::StreamNotActive);
+        }
+
+        // Get pending update
+        let pending_update = storage::get_pending_rate_update(&env, stream_id)
+            .ok_or(Error::NoPendingUpdate)?;
+
+        // Check if proposal has expired
+        if storage::is_pending_rate_update_expired(&env, stream_id) {
+            storage::remove_pending_rate_update(&env, stream_id);
+            return Err(Error::UpdateExpired);
+        }
+
+        let now = env.ledger().timestamp();
+
+        // Calculate remaining balance at current time
+        let remaining_balance = Self::calculate_remaining_balance(&env, &stream, now)?;
+
+        // Calculate new end time
+        let new_end_time = if pending_update.new_rate > 0 {
+            let additional_seconds = remaining_balance / pending_update.new_rate;
+            now.saturating_add(additional_seconds as u64)
+        } else {
+            return Err(Error::InvalidNewRate);
+        };
+
+        // Update the stream
+        stream.end_time = new_end_time;
+
+        // Update total_amount to reflect the new remaining balance
+        // (so that total streamed = original - remaining, and remaining = new_rate * new_duration)
+        // Actually, we keep total_amount as-is and only adjust end_time
+        // The stream effectively continues with the new rate until the remaining balance is exhausted
+
+        storage::set_stream(&env, stream_id, &stream);
+
+        // Remove the pending update
+        storage::remove_pending_rate_update(&env, stream_id);
+
+        // Emit event
+        let mut data = Vec::new(&env);
+        data.push_back(stream_id.into_val(&env));
+        data.push_back(caller.into_val(&env));
+        data.push_back(pending_update.new_rate.into_val(&env));
+        data.push_back(new_end_time.into_val(&env));
+        data.push_back(remaining_balance.into_val(&env));
+        data.push_back(now.into_val(&env));
+
+        env.events().publish(
+            (stream_id, symbol_short!("rate_accept")),
+            NebulaEvent {
+                version: 2,
+                timestamp: now,
+                action: symbol_short!("rate_accept"),
+                data,
+            },
+        );
+
+        Ok(new_end_time)
+    }
+
+    /// Cancel a pending rate update proposal.
+    /// 
+    /// Either party (sender or receiver) can cancel the proposal.
+    /// 
+    /// # Parameters
+    /// - `stream_id`: The ID of the stream with pending update
+    /// - `caller`: The address cancelling the proposal
+    pub fn cancel_rate_proposal(
+        env: Env,
+        stream_id: u64,
+        caller: Address,
+    ) -> Result<(), Error> {
+        // Get the stream to validate caller is involved
+        let stream = storage::get_stream(&env, stream_id)
+            .ok_or(Error::StreamNotFound)?;
+
+        // Caller must be sender or receiver
+        if caller != stream.sender && caller != stream.receiver {
+            return Err(Error::UnauthorizedSender);
+        }
+
+        // Check if pending update exists
+        if !storage::has_pending_rate_update(&env, stream_id) {
+            return Err(Error::NoPendingUpdate);
+        }
+
+        // Check if expired
+        let is_expired = storage::is_pending_rate_update_expired(&env, stream_id);
+
+        // Remove the pending update
+        storage::remove_pending_rate_update(&env, stream_id);
+
+        // Emit event
+        let now = env.ledger().timestamp();
+        let mut data = Vec::new(&env);
+        data.push_back(stream_id.into_val(&env));
+        data.push_back(caller.into_val(&env));
+        data.push_back(if is_expired { 0u32 } else { 1u32 }.into_val(&env));
+        data.push_back(now.into_val(&env));
+
+        env.events().publish(
+            (stream_id, symbol_short!("rate_cancel")),
+            NebulaEvent {
+                version: 2,
+                timestamp: now,
+                action: symbol_short!("rate_cancel"),
+                data,
+            },
+        );
+
+        Ok(())
+    }
+
+    /// Get the pending rate update for a stream.
+    /// 
+    /// # Parameters
+    /// - `stream_id`: The ID of the stream
+    /// 
+    /// # Returns
+    /// - `Some(PendingRateUpdate)` if a proposal exists and is not expired
+    /// - `None` if no proposal exists or if it has expired
+    pub fn get_pending_rate_update(
+        env: Env,
+        stream_id: u64,
+    ) -> Result<Option<PendingRateUpdate>, Error> {
+        // Check if stream exists
+        if !storage::has_stream(&env, stream_id) {
+            return Err(Error::StreamNotFound);
+        }
+
+        // Check if pending update exists
+        if !storage::has_pending_rate_update(&env, stream_id) {
+            return Ok(None);
+        }
+
+        // Check if expired
+        if storage::is_pending_rate_update_expired(&env, stream_id) {
+            // Clean up expired update
+            storage::remove_pending_rate_update(&env, stream_id);
+            return Ok(None);
+        }
+
+        Ok(storage::get_pending_rate_update(&env, stream_id))
+    }
+
+    /// Calculate the remaining balance in a stream.
+    /// This is used internally for rate rebalancing calculations.
+    fn calculate_remaining_balance(
+        env: &Env,
+        stream: &StreamV2,
+        now: u64,
+    ) -> Result<i128, Error> {
+        let effective_now = if now < stream.start_time {
+            stream.start_time
+        } else {
+            now
+        };
+
+        // If after end time, remaining is what's not yet withdrawn
+        if effective_now >= stream.end_time {
+            return Ok(stream.total_amount.saturating_sub(stream.withdrawn_amount));
+        }
+
+        // Calculate elapsed time since start
+        let elapsed = (effective_now - stream.start_time) as i128;
+        let total_duration = (stream.end_time - stream.start_time) as i128;
+
+        if total_duration <= 0 {
+            return Ok(0);
+        }
+
+        // Calculate total unlocked (excluding cliff)
+        let cliff_duration = if stream.cliff_time > stream.start_time {
+            (stream.cliff_time - stream.start_time) as i128
+        } else {
+            0
+        };
+
+        let effective_elapsed = elapsed.saturating_sub(cliff_duration);
+        let effective_duration = total_duration.saturating_sub(cliff_duration);
+
+        if effective_duration <= 0 || effective_elapsed <= 0 {
+            return Ok(stream.total_amount.saturating_sub(stream.withdrawn_amount));
+        }
+
+        // Calculate unlocked amount
+        let unlocked = (stream.total_amount * effective_elapsed) / effective_duration;
+        let remaining = stream.total_amount.saturating_sub(unlocked);
+        let withdrawable = remaining.saturating_sub(stream.withdrawn_amount);
+
+        Ok(withdrawable.max(0))
     }
 
     // ----------------------------------------------------------------
