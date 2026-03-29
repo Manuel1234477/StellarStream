@@ -432,6 +432,29 @@ exports.Prisma.AssetMappingScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PriceHistoryScalarFieldEnum = {
+  id: 'id',
+  asset: 'asset',
+  symbol: 'symbol',
+  priceUsd: 'priceUsd',
+  source: 'source',
+  recordedAt: 'recordedAt'
+};
+
+exports.Prisma.SplitLogScalarFieldEnum = {
+  id: 'id',
+  streamId: 'streamId',
+  asset: 'asset',
+  amount: 'amount',
+  sender: 'sender',
+  receiver: 'receiver',
+  txHash: 'txHash',
+  priceUsd: 'priceUsd',
+  priceSource: 'priceSource',
+  priceRecordedAt: 'priceRecordedAt',
+  executedAt: 'executedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -506,7 +529,9 @@ exports.Prisma.ModelName = {
   AssetConfig: 'AssetConfig',
   Disbursement: 'Disbursement',
   SplitRecipient: 'SplitRecipient',
-  AssetMapping: 'AssetMapping'
+  AssetMapping: 'AssetMapping',
+  PriceHistory: 'PriceHistory',
+  SplitLog: 'SplitLog'
 };
 
 /**

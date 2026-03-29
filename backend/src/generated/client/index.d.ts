@@ -138,6 +138,16 @@ export type SplitRecipient = $Result.DefaultSelection<Prisma.$SplitRecipientPayl
  * 
  */
 export type AssetMapping = $Result.DefaultSelection<Prisma.$AssetMappingPayload>
+/**
+ * Model PriceHistory
+ * 
+ */
+export type PriceHistory = $Result.DefaultSelection<Prisma.$PriceHistoryPayload>
+/**
+ * Model SplitLog
+ * 
+ */
+export type SplitLog = $Result.DefaultSelection<Prisma.$SplitLogPayload>
 
 /**
  * Enums
@@ -569,6 +579,26 @@ export class PrismaClient<
     * ```
     */
   get assetMapping(): Prisma.AssetMappingDelegate<ExtArgs>;
+
+  /**
+   * `prisma.priceHistory`: Exposes CRUD operations for the **PriceHistory** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PriceHistories
+    * const priceHistories = await prisma.priceHistory.findMany()
+    * ```
+    */
+  get priceHistory(): Prisma.PriceHistoryDelegate<ExtArgs>;
+
+  /**
+   * `prisma.splitLog`: Exposes CRUD operations for the **SplitLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SplitLogs
+    * const splitLogs = await prisma.splitLog.findMany()
+    * ```
+    */
+  get splitLog(): Prisma.SplitLogDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -1034,7 +1064,9 @@ export namespace Prisma {
     AssetConfig: 'AssetConfig',
     Disbursement: 'Disbursement',
     SplitRecipient: 'SplitRecipient',
-    AssetMapping: 'AssetMapping'
+    AssetMapping: 'AssetMapping',
+    PriceHistory: 'PriceHistory',
+    SplitLog: 'SplitLog'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1050,7 +1082,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "stream" | "contractEvent" | "tokenPrice" | "webhook" | "webhookDelivery" | "syncState" | "eventLog" | "streamSnapshot" | "streamArchive" | "bridgeLog" | "proposal" | "organizationMember" | "apiKey" | "ledgerHash" | "notificationSubscription" | "invoiceLink" | "affiliate" | "globalStats" | "tvlSnapshot" | "asset" | "autopilotSchedule" | "assetConfig" | "disbursement" | "splitRecipient" | "assetMapping"
+      modelProps: "stream" | "contractEvent" | "tokenPrice" | "webhook" | "webhookDelivery" | "syncState" | "eventLog" | "streamSnapshot" | "streamArchive" | "bridgeLog" | "proposal" | "organizationMember" | "apiKey" | "ledgerHash" | "notificationSubscription" | "invoiceLink" | "affiliate" | "globalStats" | "tvlSnapshot" | "asset" | "autopilotSchedule" | "assetConfig" | "disbursement" | "splitRecipient" | "assetMapping" | "priceHistory" | "splitLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2801,6 +2833,146 @@ export namespace Prisma {
           count: {
             args: Prisma.AssetMappingCountArgs<ExtArgs>
             result: $Utils.Optional<AssetMappingCountAggregateOutputType> | number
+          }
+        }
+      }
+      PriceHistory: {
+        payload: Prisma.$PriceHistoryPayload<ExtArgs>
+        fields: Prisma.PriceHistoryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PriceHistoryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PriceHistoryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>
+          }
+          findFirst: {
+            args: Prisma.PriceHistoryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PriceHistoryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>
+          }
+          findMany: {
+            args: Prisma.PriceHistoryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>[]
+          }
+          create: {
+            args: Prisma.PriceHistoryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>
+          }
+          createMany: {
+            args: Prisma.PriceHistoryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PriceHistoryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>[]
+          }
+          delete: {
+            args: Prisma.PriceHistoryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>
+          }
+          update: {
+            args: Prisma.PriceHistoryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>
+          }
+          deleteMany: {
+            args: Prisma.PriceHistoryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PriceHistoryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.PriceHistoryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PriceHistoryPayload>
+          }
+          aggregate: {
+            args: Prisma.PriceHistoryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePriceHistory>
+          }
+          groupBy: {
+            args: Prisma.PriceHistoryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PriceHistoryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PriceHistoryCountArgs<ExtArgs>
+            result: $Utils.Optional<PriceHistoryCountAggregateOutputType> | number
+          }
+        }
+      }
+      SplitLog: {
+        payload: Prisma.$SplitLogPayload<ExtArgs>
+        fields: Prisma.SplitLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SplitLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SplitLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SplitLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SplitLogPayload>
+          }
+          findFirst: {
+            args: Prisma.SplitLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SplitLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SplitLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SplitLogPayload>
+          }
+          findMany: {
+            args: Prisma.SplitLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SplitLogPayload>[]
+          }
+          create: {
+            args: Prisma.SplitLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SplitLogPayload>
+          }
+          createMany: {
+            args: Prisma.SplitLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SplitLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SplitLogPayload>[]
+          }
+          delete: {
+            args: Prisma.SplitLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SplitLogPayload>
+          }
+          update: {
+            args: Prisma.SplitLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SplitLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.SplitLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SplitLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.SplitLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SplitLogPayload>
+          }
+          aggregate: {
+            args: Prisma.SplitLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSplitLog>
+          }
+          groupBy: {
+            args: Prisma.SplitLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SplitLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SplitLogCountArgs<ExtArgs>
+            result: $Utils.Optional<SplitLogCountAggregateOutputType> | number
           }
         }
       }
@@ -27014,6 +27186,1914 @@ export namespace Prisma {
 
 
   /**
+   * Model PriceHistory
+   */
+
+  export type AggregatePriceHistory = {
+    _count: PriceHistoryCountAggregateOutputType | null
+    _avg: PriceHistoryAvgAggregateOutputType | null
+    _sum: PriceHistorySumAggregateOutputType | null
+    _min: PriceHistoryMinAggregateOutputType | null
+    _max: PriceHistoryMaxAggregateOutputType | null
+  }
+
+  export type PriceHistoryAvgAggregateOutputType = {
+    priceUsd: number | null
+  }
+
+  export type PriceHistorySumAggregateOutputType = {
+    priceUsd: number | null
+  }
+
+  export type PriceHistoryMinAggregateOutputType = {
+    id: string | null
+    asset: string | null
+    symbol: string | null
+    priceUsd: number | null
+    source: string | null
+    recordedAt: Date | null
+  }
+
+  export type PriceHistoryMaxAggregateOutputType = {
+    id: string | null
+    asset: string | null
+    symbol: string | null
+    priceUsd: number | null
+    source: string | null
+    recordedAt: Date | null
+  }
+
+  export type PriceHistoryCountAggregateOutputType = {
+    id: number
+    asset: number
+    symbol: number
+    priceUsd: number
+    source: number
+    recordedAt: number
+    _all: number
+  }
+
+
+  export type PriceHistoryAvgAggregateInputType = {
+    priceUsd?: true
+  }
+
+  export type PriceHistorySumAggregateInputType = {
+    priceUsd?: true
+  }
+
+  export type PriceHistoryMinAggregateInputType = {
+    id?: true
+    asset?: true
+    symbol?: true
+    priceUsd?: true
+    source?: true
+    recordedAt?: true
+  }
+
+  export type PriceHistoryMaxAggregateInputType = {
+    id?: true
+    asset?: true
+    symbol?: true
+    priceUsd?: true
+    source?: true
+    recordedAt?: true
+  }
+
+  export type PriceHistoryCountAggregateInputType = {
+    id?: true
+    asset?: true
+    symbol?: true
+    priceUsd?: true
+    source?: true
+    recordedAt?: true
+    _all?: true
+  }
+
+  export type PriceHistoryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PriceHistory to aggregate.
+     */
+    where?: PriceHistoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PriceHistories to fetch.
+     */
+    orderBy?: PriceHistoryOrderByWithRelationInput | PriceHistoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PriceHistoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PriceHistories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PriceHistories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PriceHistories
+    **/
+    _count?: true | PriceHistoryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PriceHistoryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PriceHistorySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PriceHistoryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PriceHistoryMaxAggregateInputType
+  }
+
+  export type GetPriceHistoryAggregateType<T extends PriceHistoryAggregateArgs> = {
+        [P in keyof T & keyof AggregatePriceHistory]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePriceHistory[P]>
+      : GetScalarType<T[P], AggregatePriceHistory[P]>
+  }
+
+
+
+
+  export type PriceHistoryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PriceHistoryWhereInput
+    orderBy?: PriceHistoryOrderByWithAggregationInput | PriceHistoryOrderByWithAggregationInput[]
+    by: PriceHistoryScalarFieldEnum[] | PriceHistoryScalarFieldEnum
+    having?: PriceHistoryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PriceHistoryCountAggregateInputType | true
+    _avg?: PriceHistoryAvgAggregateInputType
+    _sum?: PriceHistorySumAggregateInputType
+    _min?: PriceHistoryMinAggregateInputType
+    _max?: PriceHistoryMaxAggregateInputType
+  }
+
+  export type PriceHistoryGroupByOutputType = {
+    id: string
+    asset: string
+    symbol: string
+    priceUsd: number
+    source: string
+    recordedAt: Date
+    _count: PriceHistoryCountAggregateOutputType | null
+    _avg: PriceHistoryAvgAggregateOutputType | null
+    _sum: PriceHistorySumAggregateOutputType | null
+    _min: PriceHistoryMinAggregateOutputType | null
+    _max: PriceHistoryMaxAggregateOutputType | null
+  }
+
+  type GetPriceHistoryGroupByPayload<T extends PriceHistoryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PriceHistoryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PriceHistoryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PriceHistoryGroupByOutputType[P]>
+            : GetScalarType<T[P], PriceHistoryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PriceHistorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    asset?: boolean
+    symbol?: boolean
+    priceUsd?: boolean
+    source?: boolean
+    recordedAt?: boolean
+  }, ExtArgs["result"]["priceHistory"]>
+
+  export type PriceHistorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    asset?: boolean
+    symbol?: boolean
+    priceUsd?: boolean
+    source?: boolean
+    recordedAt?: boolean
+  }, ExtArgs["result"]["priceHistory"]>
+
+  export type PriceHistorySelectScalar = {
+    id?: boolean
+    asset?: boolean
+    symbol?: boolean
+    priceUsd?: boolean
+    source?: boolean
+    recordedAt?: boolean
+  }
+
+
+  export type $PriceHistoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PriceHistory"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      asset: string
+      symbol: string
+      priceUsd: number
+      source: string
+      recordedAt: Date
+    }, ExtArgs["result"]["priceHistory"]>
+    composites: {}
+  }
+
+  type PriceHistoryGetPayload<S extends boolean | null | undefined | PriceHistoryDefaultArgs> = $Result.GetResult<Prisma.$PriceHistoryPayload, S>
+
+  type PriceHistoryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<PriceHistoryFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: PriceHistoryCountAggregateInputType | true
+    }
+
+  export interface PriceHistoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PriceHistory'], meta: { name: 'PriceHistory' } }
+    /**
+     * Find zero or one PriceHistory that matches the filter.
+     * @param {PriceHistoryFindUniqueArgs} args - Arguments to find a PriceHistory
+     * @example
+     * // Get one PriceHistory
+     * const priceHistory = await prisma.priceHistory.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PriceHistoryFindUniqueArgs>(args: SelectSubset<T, PriceHistoryFindUniqueArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one PriceHistory that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {PriceHistoryFindUniqueOrThrowArgs} args - Arguments to find a PriceHistory
+     * @example
+     * // Get one PriceHistory
+     * const priceHistory = await prisma.priceHistory.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PriceHistoryFindUniqueOrThrowArgs>(args: SelectSubset<T, PriceHistoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first PriceHistory that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PriceHistoryFindFirstArgs} args - Arguments to find a PriceHistory
+     * @example
+     * // Get one PriceHistory
+     * const priceHistory = await prisma.priceHistory.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PriceHistoryFindFirstArgs>(args?: SelectSubset<T, PriceHistoryFindFirstArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first PriceHistory that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PriceHistoryFindFirstOrThrowArgs} args - Arguments to find a PriceHistory
+     * @example
+     * // Get one PriceHistory
+     * const priceHistory = await prisma.priceHistory.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PriceHistoryFindFirstOrThrowArgs>(args?: SelectSubset<T, PriceHistoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more PriceHistories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PriceHistoryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PriceHistories
+     * const priceHistories = await prisma.priceHistory.findMany()
+     * 
+     * // Get first 10 PriceHistories
+     * const priceHistories = await prisma.priceHistory.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const priceHistoryWithIdOnly = await prisma.priceHistory.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PriceHistoryFindManyArgs>(args?: SelectSubset<T, PriceHistoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a PriceHistory.
+     * @param {PriceHistoryCreateArgs} args - Arguments to create a PriceHistory.
+     * @example
+     * // Create one PriceHistory
+     * const PriceHistory = await prisma.priceHistory.create({
+     *   data: {
+     *     // ... data to create a PriceHistory
+     *   }
+     * })
+     * 
+     */
+    create<T extends PriceHistoryCreateArgs>(args: SelectSubset<T, PriceHistoryCreateArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many PriceHistories.
+     * @param {PriceHistoryCreateManyArgs} args - Arguments to create many PriceHistories.
+     * @example
+     * // Create many PriceHistories
+     * const priceHistory = await prisma.priceHistory.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PriceHistoryCreateManyArgs>(args?: SelectSubset<T, PriceHistoryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PriceHistories and returns the data saved in the database.
+     * @param {PriceHistoryCreateManyAndReturnArgs} args - Arguments to create many PriceHistories.
+     * @example
+     * // Create many PriceHistories
+     * const priceHistory = await prisma.priceHistory.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PriceHistories and only return the `id`
+     * const priceHistoryWithIdOnly = await prisma.priceHistory.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PriceHistoryCreateManyAndReturnArgs>(args?: SelectSubset<T, PriceHistoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a PriceHistory.
+     * @param {PriceHistoryDeleteArgs} args - Arguments to delete one PriceHistory.
+     * @example
+     * // Delete one PriceHistory
+     * const PriceHistory = await prisma.priceHistory.delete({
+     *   where: {
+     *     // ... filter to delete one PriceHistory
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PriceHistoryDeleteArgs>(args: SelectSubset<T, PriceHistoryDeleteArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one PriceHistory.
+     * @param {PriceHistoryUpdateArgs} args - Arguments to update one PriceHistory.
+     * @example
+     * // Update one PriceHistory
+     * const priceHistory = await prisma.priceHistory.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PriceHistoryUpdateArgs>(args: SelectSubset<T, PriceHistoryUpdateArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more PriceHistories.
+     * @param {PriceHistoryDeleteManyArgs} args - Arguments to filter PriceHistories to delete.
+     * @example
+     * // Delete a few PriceHistories
+     * const { count } = await prisma.priceHistory.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PriceHistoryDeleteManyArgs>(args?: SelectSubset<T, PriceHistoryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PriceHistories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PriceHistoryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PriceHistories
+     * const priceHistory = await prisma.priceHistory.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PriceHistoryUpdateManyArgs>(args: SelectSubset<T, PriceHistoryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one PriceHistory.
+     * @param {PriceHistoryUpsertArgs} args - Arguments to update or create a PriceHistory.
+     * @example
+     * // Update or create a PriceHistory
+     * const priceHistory = await prisma.priceHistory.upsert({
+     *   create: {
+     *     // ... data to create a PriceHistory
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PriceHistory we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PriceHistoryUpsertArgs>(args: SelectSubset<T, PriceHistoryUpsertArgs<ExtArgs>>): Prisma__PriceHistoryClient<$Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of PriceHistories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PriceHistoryCountArgs} args - Arguments to filter PriceHistories to count.
+     * @example
+     * // Count the number of PriceHistories
+     * const count = await prisma.priceHistory.count({
+     *   where: {
+     *     // ... the filter for the PriceHistories we want to count
+     *   }
+     * })
+    **/
+    count<T extends PriceHistoryCountArgs>(
+      args?: Subset<T, PriceHistoryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PriceHistoryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PriceHistory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PriceHistoryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PriceHistoryAggregateArgs>(args: Subset<T, PriceHistoryAggregateArgs>): Prisma.PrismaPromise<GetPriceHistoryAggregateType<T>>
+
+    /**
+     * Group by PriceHistory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PriceHistoryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PriceHistoryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PriceHistoryGroupByArgs['orderBy'] }
+        : { orderBy?: PriceHistoryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PriceHistoryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPriceHistoryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PriceHistory model
+   */
+  readonly fields: PriceHistoryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PriceHistory.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PriceHistoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PriceHistory model
+   */ 
+  interface PriceHistoryFieldRefs {
+    readonly id: FieldRef<"PriceHistory", 'String'>
+    readonly asset: FieldRef<"PriceHistory", 'String'>
+    readonly symbol: FieldRef<"PriceHistory", 'String'>
+    readonly priceUsd: FieldRef<"PriceHistory", 'Float'>
+    readonly source: FieldRef<"PriceHistory", 'String'>
+    readonly recordedAt: FieldRef<"PriceHistory", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PriceHistory findUnique
+   */
+  export type PriceHistoryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Filter, which PriceHistory to fetch.
+     */
+    where: PriceHistoryWhereUniqueInput
+  }
+
+  /**
+   * PriceHistory findUniqueOrThrow
+   */
+  export type PriceHistoryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Filter, which PriceHistory to fetch.
+     */
+    where: PriceHistoryWhereUniqueInput
+  }
+
+  /**
+   * PriceHistory findFirst
+   */
+  export type PriceHistoryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Filter, which PriceHistory to fetch.
+     */
+    where?: PriceHistoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PriceHistories to fetch.
+     */
+    orderBy?: PriceHistoryOrderByWithRelationInput | PriceHistoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PriceHistories.
+     */
+    cursor?: PriceHistoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PriceHistories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PriceHistories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PriceHistories.
+     */
+    distinct?: PriceHistoryScalarFieldEnum | PriceHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * PriceHistory findFirstOrThrow
+   */
+  export type PriceHistoryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Filter, which PriceHistory to fetch.
+     */
+    where?: PriceHistoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PriceHistories to fetch.
+     */
+    orderBy?: PriceHistoryOrderByWithRelationInput | PriceHistoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PriceHistories.
+     */
+    cursor?: PriceHistoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PriceHistories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PriceHistories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PriceHistories.
+     */
+    distinct?: PriceHistoryScalarFieldEnum | PriceHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * PriceHistory findMany
+   */
+  export type PriceHistoryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Filter, which PriceHistories to fetch.
+     */
+    where?: PriceHistoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PriceHistories to fetch.
+     */
+    orderBy?: PriceHistoryOrderByWithRelationInput | PriceHistoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PriceHistories.
+     */
+    cursor?: PriceHistoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PriceHistories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PriceHistories.
+     */
+    skip?: number
+    distinct?: PriceHistoryScalarFieldEnum | PriceHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * PriceHistory create
+   */
+  export type PriceHistoryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * The data needed to create a PriceHistory.
+     */
+    data: XOR<PriceHistoryCreateInput, PriceHistoryUncheckedCreateInput>
+  }
+
+  /**
+   * PriceHistory createMany
+   */
+  export type PriceHistoryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PriceHistories.
+     */
+    data: PriceHistoryCreateManyInput | PriceHistoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PriceHistory createManyAndReturn
+   */
+  export type PriceHistoryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many PriceHistories.
+     */
+    data: PriceHistoryCreateManyInput | PriceHistoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PriceHistory update
+   */
+  export type PriceHistoryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * The data needed to update a PriceHistory.
+     */
+    data: XOR<PriceHistoryUpdateInput, PriceHistoryUncheckedUpdateInput>
+    /**
+     * Choose, which PriceHistory to update.
+     */
+    where: PriceHistoryWhereUniqueInput
+  }
+
+  /**
+   * PriceHistory updateMany
+   */
+  export type PriceHistoryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PriceHistories.
+     */
+    data: XOR<PriceHistoryUpdateManyMutationInput, PriceHistoryUncheckedUpdateManyInput>
+    /**
+     * Filter which PriceHistories to update
+     */
+    where?: PriceHistoryWhereInput
+  }
+
+  /**
+   * PriceHistory upsert
+   */
+  export type PriceHistoryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * The filter to search for the PriceHistory to update in case it exists.
+     */
+    where: PriceHistoryWhereUniqueInput
+    /**
+     * In case the PriceHistory found by the `where` argument doesn't exist, create a new PriceHistory with this data.
+     */
+    create: XOR<PriceHistoryCreateInput, PriceHistoryUncheckedCreateInput>
+    /**
+     * In case the PriceHistory was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PriceHistoryUpdateInput, PriceHistoryUncheckedUpdateInput>
+  }
+
+  /**
+   * PriceHistory delete
+   */
+  export type PriceHistoryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+    /**
+     * Filter which PriceHistory to delete.
+     */
+    where: PriceHistoryWhereUniqueInput
+  }
+
+  /**
+   * PriceHistory deleteMany
+   */
+  export type PriceHistoryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PriceHistories to delete
+     */
+    where?: PriceHistoryWhereInput
+  }
+
+  /**
+   * PriceHistory without action
+   */
+  export type PriceHistoryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceHistory
+     */
+    select?: PriceHistorySelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SplitLog
+   */
+
+  export type AggregateSplitLog = {
+    _count: SplitLogCountAggregateOutputType | null
+    _avg: SplitLogAvgAggregateOutputType | null
+    _sum: SplitLogSumAggregateOutputType | null
+    _min: SplitLogMinAggregateOutputType | null
+    _max: SplitLogMaxAggregateOutputType | null
+  }
+
+  export type SplitLogAvgAggregateOutputType = {
+    priceUsd: number | null
+  }
+
+  export type SplitLogSumAggregateOutputType = {
+    priceUsd: number | null
+  }
+
+  export type SplitLogMinAggregateOutputType = {
+    id: string | null
+    streamId: string | null
+    asset: string | null
+    amount: string | null
+    sender: string | null
+    receiver: string | null
+    txHash: string | null
+    priceUsd: number | null
+    priceSource: string | null
+    priceRecordedAt: Date | null
+    executedAt: Date | null
+  }
+
+  export type SplitLogMaxAggregateOutputType = {
+    id: string | null
+    streamId: string | null
+    asset: string | null
+    amount: string | null
+    sender: string | null
+    receiver: string | null
+    txHash: string | null
+    priceUsd: number | null
+    priceSource: string | null
+    priceRecordedAt: Date | null
+    executedAt: Date | null
+  }
+
+  export type SplitLogCountAggregateOutputType = {
+    id: number
+    streamId: number
+    asset: number
+    amount: number
+    sender: number
+    receiver: number
+    txHash: number
+    priceUsd: number
+    priceSource: number
+    priceRecordedAt: number
+    executedAt: number
+    _all: number
+  }
+
+
+  export type SplitLogAvgAggregateInputType = {
+    priceUsd?: true
+  }
+
+  export type SplitLogSumAggregateInputType = {
+    priceUsd?: true
+  }
+
+  export type SplitLogMinAggregateInputType = {
+    id?: true
+    streamId?: true
+    asset?: true
+    amount?: true
+    sender?: true
+    receiver?: true
+    txHash?: true
+    priceUsd?: true
+    priceSource?: true
+    priceRecordedAt?: true
+    executedAt?: true
+  }
+
+  export type SplitLogMaxAggregateInputType = {
+    id?: true
+    streamId?: true
+    asset?: true
+    amount?: true
+    sender?: true
+    receiver?: true
+    txHash?: true
+    priceUsd?: true
+    priceSource?: true
+    priceRecordedAt?: true
+    executedAt?: true
+  }
+
+  export type SplitLogCountAggregateInputType = {
+    id?: true
+    streamId?: true
+    asset?: true
+    amount?: true
+    sender?: true
+    receiver?: true
+    txHash?: true
+    priceUsd?: true
+    priceSource?: true
+    priceRecordedAt?: true
+    executedAt?: true
+    _all?: true
+  }
+
+  export type SplitLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SplitLog to aggregate.
+     */
+    where?: SplitLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SplitLogs to fetch.
+     */
+    orderBy?: SplitLogOrderByWithRelationInput | SplitLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SplitLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SplitLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SplitLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SplitLogs
+    **/
+    _count?: true | SplitLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SplitLogAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SplitLogSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SplitLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SplitLogMaxAggregateInputType
+  }
+
+  export type GetSplitLogAggregateType<T extends SplitLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateSplitLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSplitLog[P]>
+      : GetScalarType<T[P], AggregateSplitLog[P]>
+  }
+
+
+
+
+  export type SplitLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SplitLogWhereInput
+    orderBy?: SplitLogOrderByWithAggregationInput | SplitLogOrderByWithAggregationInput[]
+    by: SplitLogScalarFieldEnum[] | SplitLogScalarFieldEnum
+    having?: SplitLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SplitLogCountAggregateInputType | true
+    _avg?: SplitLogAvgAggregateInputType
+    _sum?: SplitLogSumAggregateInputType
+    _min?: SplitLogMinAggregateInputType
+    _max?: SplitLogMaxAggregateInputType
+  }
+
+  export type SplitLogGroupByOutputType = {
+    id: string
+    streamId: string
+    asset: string
+    amount: string
+    sender: string
+    receiver: string
+    txHash: string
+    priceUsd: number | null
+    priceSource: string | null
+    priceRecordedAt: Date | null
+    executedAt: Date
+    _count: SplitLogCountAggregateOutputType | null
+    _avg: SplitLogAvgAggregateOutputType | null
+    _sum: SplitLogSumAggregateOutputType | null
+    _min: SplitLogMinAggregateOutputType | null
+    _max: SplitLogMaxAggregateOutputType | null
+  }
+
+  type GetSplitLogGroupByPayload<T extends SplitLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SplitLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SplitLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SplitLogGroupByOutputType[P]>
+            : GetScalarType<T[P], SplitLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SplitLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    streamId?: boolean
+    asset?: boolean
+    amount?: boolean
+    sender?: boolean
+    receiver?: boolean
+    txHash?: boolean
+    priceUsd?: boolean
+    priceSource?: boolean
+    priceRecordedAt?: boolean
+    executedAt?: boolean
+  }, ExtArgs["result"]["splitLog"]>
+
+  export type SplitLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    streamId?: boolean
+    asset?: boolean
+    amount?: boolean
+    sender?: boolean
+    receiver?: boolean
+    txHash?: boolean
+    priceUsd?: boolean
+    priceSource?: boolean
+    priceRecordedAt?: boolean
+    executedAt?: boolean
+  }, ExtArgs["result"]["splitLog"]>
+
+  export type SplitLogSelectScalar = {
+    id?: boolean
+    streamId?: boolean
+    asset?: boolean
+    amount?: boolean
+    sender?: boolean
+    receiver?: boolean
+    txHash?: boolean
+    priceUsd?: boolean
+    priceSource?: boolean
+    priceRecordedAt?: boolean
+    executedAt?: boolean
+  }
+
+
+  export type $SplitLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SplitLog"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      streamId: string
+      asset: string
+      amount: string
+      sender: string
+      receiver: string
+      txHash: string
+      priceUsd: number | null
+      priceSource: string | null
+      priceRecordedAt: Date | null
+      executedAt: Date
+    }, ExtArgs["result"]["splitLog"]>
+    composites: {}
+  }
+
+  type SplitLogGetPayload<S extends boolean | null | undefined | SplitLogDefaultArgs> = $Result.GetResult<Prisma.$SplitLogPayload, S>
+
+  type SplitLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<SplitLogFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: SplitLogCountAggregateInputType | true
+    }
+
+  export interface SplitLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SplitLog'], meta: { name: 'SplitLog' } }
+    /**
+     * Find zero or one SplitLog that matches the filter.
+     * @param {SplitLogFindUniqueArgs} args - Arguments to find a SplitLog
+     * @example
+     * // Get one SplitLog
+     * const splitLog = await prisma.splitLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SplitLogFindUniqueArgs>(args: SelectSubset<T, SplitLogFindUniqueArgs<ExtArgs>>): Prisma__SplitLogClient<$Result.GetResult<Prisma.$SplitLogPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one SplitLog that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {SplitLogFindUniqueOrThrowArgs} args - Arguments to find a SplitLog
+     * @example
+     * // Get one SplitLog
+     * const splitLog = await prisma.splitLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SplitLogFindUniqueOrThrowArgs>(args: SelectSubset<T, SplitLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SplitLogClient<$Result.GetResult<Prisma.$SplitLogPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first SplitLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SplitLogFindFirstArgs} args - Arguments to find a SplitLog
+     * @example
+     * // Get one SplitLog
+     * const splitLog = await prisma.splitLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SplitLogFindFirstArgs>(args?: SelectSubset<T, SplitLogFindFirstArgs<ExtArgs>>): Prisma__SplitLogClient<$Result.GetResult<Prisma.$SplitLogPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first SplitLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SplitLogFindFirstOrThrowArgs} args - Arguments to find a SplitLog
+     * @example
+     * // Get one SplitLog
+     * const splitLog = await prisma.splitLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SplitLogFindFirstOrThrowArgs>(args?: SelectSubset<T, SplitLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__SplitLogClient<$Result.GetResult<Prisma.$SplitLogPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more SplitLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SplitLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SplitLogs
+     * const splitLogs = await prisma.splitLog.findMany()
+     * 
+     * // Get first 10 SplitLogs
+     * const splitLogs = await prisma.splitLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const splitLogWithIdOnly = await prisma.splitLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SplitLogFindManyArgs>(args?: SelectSubset<T, SplitLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SplitLogPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a SplitLog.
+     * @param {SplitLogCreateArgs} args - Arguments to create a SplitLog.
+     * @example
+     * // Create one SplitLog
+     * const SplitLog = await prisma.splitLog.create({
+     *   data: {
+     *     // ... data to create a SplitLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends SplitLogCreateArgs>(args: SelectSubset<T, SplitLogCreateArgs<ExtArgs>>): Prisma__SplitLogClient<$Result.GetResult<Prisma.$SplitLogPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many SplitLogs.
+     * @param {SplitLogCreateManyArgs} args - Arguments to create many SplitLogs.
+     * @example
+     * // Create many SplitLogs
+     * const splitLog = await prisma.splitLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SplitLogCreateManyArgs>(args?: SelectSubset<T, SplitLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SplitLogs and returns the data saved in the database.
+     * @param {SplitLogCreateManyAndReturnArgs} args - Arguments to create many SplitLogs.
+     * @example
+     * // Create many SplitLogs
+     * const splitLog = await prisma.splitLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SplitLogs and only return the `id`
+     * const splitLogWithIdOnly = await prisma.splitLog.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SplitLogCreateManyAndReturnArgs>(args?: SelectSubset<T, SplitLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SplitLogPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a SplitLog.
+     * @param {SplitLogDeleteArgs} args - Arguments to delete one SplitLog.
+     * @example
+     * // Delete one SplitLog
+     * const SplitLog = await prisma.splitLog.delete({
+     *   where: {
+     *     // ... filter to delete one SplitLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SplitLogDeleteArgs>(args: SelectSubset<T, SplitLogDeleteArgs<ExtArgs>>): Prisma__SplitLogClient<$Result.GetResult<Prisma.$SplitLogPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one SplitLog.
+     * @param {SplitLogUpdateArgs} args - Arguments to update one SplitLog.
+     * @example
+     * // Update one SplitLog
+     * const splitLog = await prisma.splitLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SplitLogUpdateArgs>(args: SelectSubset<T, SplitLogUpdateArgs<ExtArgs>>): Prisma__SplitLogClient<$Result.GetResult<Prisma.$SplitLogPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more SplitLogs.
+     * @param {SplitLogDeleteManyArgs} args - Arguments to filter SplitLogs to delete.
+     * @example
+     * // Delete a few SplitLogs
+     * const { count } = await prisma.splitLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SplitLogDeleteManyArgs>(args?: SelectSubset<T, SplitLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SplitLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SplitLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SplitLogs
+     * const splitLog = await prisma.splitLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SplitLogUpdateManyArgs>(args: SelectSubset<T, SplitLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one SplitLog.
+     * @param {SplitLogUpsertArgs} args - Arguments to update or create a SplitLog.
+     * @example
+     * // Update or create a SplitLog
+     * const splitLog = await prisma.splitLog.upsert({
+     *   create: {
+     *     // ... data to create a SplitLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SplitLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SplitLogUpsertArgs>(args: SelectSubset<T, SplitLogUpsertArgs<ExtArgs>>): Prisma__SplitLogClient<$Result.GetResult<Prisma.$SplitLogPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of SplitLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SplitLogCountArgs} args - Arguments to filter SplitLogs to count.
+     * @example
+     * // Count the number of SplitLogs
+     * const count = await prisma.splitLog.count({
+     *   where: {
+     *     // ... the filter for the SplitLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends SplitLogCountArgs>(
+      args?: Subset<T, SplitLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SplitLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SplitLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SplitLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SplitLogAggregateArgs>(args: Subset<T, SplitLogAggregateArgs>): Prisma.PrismaPromise<GetSplitLogAggregateType<T>>
+
+    /**
+     * Group by SplitLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SplitLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SplitLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SplitLogGroupByArgs['orderBy'] }
+        : { orderBy?: SplitLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SplitLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSplitLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SplitLog model
+   */
+  readonly fields: SplitLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SplitLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SplitLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SplitLog model
+   */ 
+  interface SplitLogFieldRefs {
+    readonly id: FieldRef<"SplitLog", 'String'>
+    readonly streamId: FieldRef<"SplitLog", 'String'>
+    readonly asset: FieldRef<"SplitLog", 'String'>
+    readonly amount: FieldRef<"SplitLog", 'String'>
+    readonly sender: FieldRef<"SplitLog", 'String'>
+    readonly receiver: FieldRef<"SplitLog", 'String'>
+    readonly txHash: FieldRef<"SplitLog", 'String'>
+    readonly priceUsd: FieldRef<"SplitLog", 'Float'>
+    readonly priceSource: FieldRef<"SplitLog", 'String'>
+    readonly priceRecordedAt: FieldRef<"SplitLog", 'DateTime'>
+    readonly executedAt: FieldRef<"SplitLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SplitLog findUnique
+   */
+  export type SplitLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SplitLog
+     */
+    select?: SplitLogSelect<ExtArgs> | null
+    /**
+     * Filter, which SplitLog to fetch.
+     */
+    where: SplitLogWhereUniqueInput
+  }
+
+  /**
+   * SplitLog findUniqueOrThrow
+   */
+  export type SplitLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SplitLog
+     */
+    select?: SplitLogSelect<ExtArgs> | null
+    /**
+     * Filter, which SplitLog to fetch.
+     */
+    where: SplitLogWhereUniqueInput
+  }
+
+  /**
+   * SplitLog findFirst
+   */
+  export type SplitLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SplitLog
+     */
+    select?: SplitLogSelect<ExtArgs> | null
+    /**
+     * Filter, which SplitLog to fetch.
+     */
+    where?: SplitLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SplitLogs to fetch.
+     */
+    orderBy?: SplitLogOrderByWithRelationInput | SplitLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SplitLogs.
+     */
+    cursor?: SplitLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SplitLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SplitLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SplitLogs.
+     */
+    distinct?: SplitLogScalarFieldEnum | SplitLogScalarFieldEnum[]
+  }
+
+  /**
+   * SplitLog findFirstOrThrow
+   */
+  export type SplitLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SplitLog
+     */
+    select?: SplitLogSelect<ExtArgs> | null
+    /**
+     * Filter, which SplitLog to fetch.
+     */
+    where?: SplitLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SplitLogs to fetch.
+     */
+    orderBy?: SplitLogOrderByWithRelationInput | SplitLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SplitLogs.
+     */
+    cursor?: SplitLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SplitLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SplitLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SplitLogs.
+     */
+    distinct?: SplitLogScalarFieldEnum | SplitLogScalarFieldEnum[]
+  }
+
+  /**
+   * SplitLog findMany
+   */
+  export type SplitLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SplitLog
+     */
+    select?: SplitLogSelect<ExtArgs> | null
+    /**
+     * Filter, which SplitLogs to fetch.
+     */
+    where?: SplitLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SplitLogs to fetch.
+     */
+    orderBy?: SplitLogOrderByWithRelationInput | SplitLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SplitLogs.
+     */
+    cursor?: SplitLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SplitLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SplitLogs.
+     */
+    skip?: number
+    distinct?: SplitLogScalarFieldEnum | SplitLogScalarFieldEnum[]
+  }
+
+  /**
+   * SplitLog create
+   */
+  export type SplitLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SplitLog
+     */
+    select?: SplitLogSelect<ExtArgs> | null
+    /**
+     * The data needed to create a SplitLog.
+     */
+    data: XOR<SplitLogCreateInput, SplitLogUncheckedCreateInput>
+  }
+
+  /**
+   * SplitLog createMany
+   */
+  export type SplitLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SplitLogs.
+     */
+    data: SplitLogCreateManyInput | SplitLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SplitLog createManyAndReturn
+   */
+  export type SplitLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SplitLog
+     */
+    select?: SplitLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many SplitLogs.
+     */
+    data: SplitLogCreateManyInput | SplitLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SplitLog update
+   */
+  export type SplitLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SplitLog
+     */
+    select?: SplitLogSelect<ExtArgs> | null
+    /**
+     * The data needed to update a SplitLog.
+     */
+    data: XOR<SplitLogUpdateInput, SplitLogUncheckedUpdateInput>
+    /**
+     * Choose, which SplitLog to update.
+     */
+    where: SplitLogWhereUniqueInput
+  }
+
+  /**
+   * SplitLog updateMany
+   */
+  export type SplitLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SplitLogs.
+     */
+    data: XOR<SplitLogUpdateManyMutationInput, SplitLogUncheckedUpdateManyInput>
+    /**
+     * Filter which SplitLogs to update
+     */
+    where?: SplitLogWhereInput
+  }
+
+  /**
+   * SplitLog upsert
+   */
+  export type SplitLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SplitLog
+     */
+    select?: SplitLogSelect<ExtArgs> | null
+    /**
+     * The filter to search for the SplitLog to update in case it exists.
+     */
+    where: SplitLogWhereUniqueInput
+    /**
+     * In case the SplitLog found by the `where` argument doesn't exist, create a new SplitLog with this data.
+     */
+    create: XOR<SplitLogCreateInput, SplitLogUncheckedCreateInput>
+    /**
+     * In case the SplitLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SplitLogUpdateInput, SplitLogUncheckedUpdateInput>
+  }
+
+  /**
+   * SplitLog delete
+   */
+  export type SplitLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SplitLog
+     */
+    select?: SplitLogSelect<ExtArgs> | null
+    /**
+     * Filter which SplitLog to delete.
+     */
+    where: SplitLogWhereUniqueInput
+  }
+
+  /**
+   * SplitLog deleteMany
+   */
+  export type SplitLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SplitLogs to delete
+     */
+    where?: SplitLogWhereInput
+  }
+
+  /**
+   * SplitLog without action
+   */
+  export type SplitLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SplitLog
+     */
+    select?: SplitLogSelect<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -27410,6 +29490,35 @@ export namespace Prisma {
   };
 
   export type AssetMappingScalarFieldEnum = (typeof AssetMappingScalarFieldEnum)[keyof typeof AssetMappingScalarFieldEnum]
+
+
+  export const PriceHistoryScalarFieldEnum: {
+    id: 'id',
+    asset: 'asset',
+    symbol: 'symbol',
+    priceUsd: 'priceUsd',
+    source: 'source',
+    recordedAt: 'recordedAt'
+  };
+
+  export type PriceHistoryScalarFieldEnum = (typeof PriceHistoryScalarFieldEnum)[keyof typeof PriceHistoryScalarFieldEnum]
+
+
+  export const SplitLogScalarFieldEnum: {
+    id: 'id',
+    streamId: 'streamId',
+    asset: 'asset',
+    amount: 'amount',
+    sender: 'sender',
+    receiver: 'receiver',
+    txHash: 'txHash',
+    priceUsd: 'priceUsd',
+    priceSource: 'priceSource',
+    priceRecordedAt: 'priceRecordedAt',
+    executedAt: 'executedAt'
+  };
+
+  export type SplitLogScalarFieldEnum = (typeof SplitLogScalarFieldEnum)[keyof typeof SplitLogScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -29493,6 +31602,149 @@ export namespace Prisma {
     isNative?: BoolWithAggregatesFilter<"AssetMapping"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"AssetMapping"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"AssetMapping"> | Date | string
+  }
+
+  export type PriceHistoryWhereInput = {
+    AND?: PriceHistoryWhereInput | PriceHistoryWhereInput[]
+    OR?: PriceHistoryWhereInput[]
+    NOT?: PriceHistoryWhereInput | PriceHistoryWhereInput[]
+    id?: StringFilter<"PriceHistory"> | string
+    asset?: StringFilter<"PriceHistory"> | string
+    symbol?: StringFilter<"PriceHistory"> | string
+    priceUsd?: FloatFilter<"PriceHistory"> | number
+    source?: StringFilter<"PriceHistory"> | string
+    recordedAt?: DateTimeFilter<"PriceHistory"> | Date | string
+  }
+
+  export type PriceHistoryOrderByWithRelationInput = {
+    id?: SortOrder
+    asset?: SortOrder
+    symbol?: SortOrder
+    priceUsd?: SortOrder
+    source?: SortOrder
+    recordedAt?: SortOrder
+  }
+
+  export type PriceHistoryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PriceHistoryWhereInput | PriceHistoryWhereInput[]
+    OR?: PriceHistoryWhereInput[]
+    NOT?: PriceHistoryWhereInput | PriceHistoryWhereInput[]
+    asset?: StringFilter<"PriceHistory"> | string
+    symbol?: StringFilter<"PriceHistory"> | string
+    priceUsd?: FloatFilter<"PriceHistory"> | number
+    source?: StringFilter<"PriceHistory"> | string
+    recordedAt?: DateTimeFilter<"PriceHistory"> | Date | string
+  }, "id">
+
+  export type PriceHistoryOrderByWithAggregationInput = {
+    id?: SortOrder
+    asset?: SortOrder
+    symbol?: SortOrder
+    priceUsd?: SortOrder
+    source?: SortOrder
+    recordedAt?: SortOrder
+    _count?: PriceHistoryCountOrderByAggregateInput
+    _avg?: PriceHistoryAvgOrderByAggregateInput
+    _max?: PriceHistoryMaxOrderByAggregateInput
+    _min?: PriceHistoryMinOrderByAggregateInput
+    _sum?: PriceHistorySumOrderByAggregateInput
+  }
+
+  export type PriceHistoryScalarWhereWithAggregatesInput = {
+    AND?: PriceHistoryScalarWhereWithAggregatesInput | PriceHistoryScalarWhereWithAggregatesInput[]
+    OR?: PriceHistoryScalarWhereWithAggregatesInput[]
+    NOT?: PriceHistoryScalarWhereWithAggregatesInput | PriceHistoryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PriceHistory"> | string
+    asset?: StringWithAggregatesFilter<"PriceHistory"> | string
+    symbol?: StringWithAggregatesFilter<"PriceHistory"> | string
+    priceUsd?: FloatWithAggregatesFilter<"PriceHistory"> | number
+    source?: StringWithAggregatesFilter<"PriceHistory"> | string
+    recordedAt?: DateTimeWithAggregatesFilter<"PriceHistory"> | Date | string
+  }
+
+  export type SplitLogWhereInput = {
+    AND?: SplitLogWhereInput | SplitLogWhereInput[]
+    OR?: SplitLogWhereInput[]
+    NOT?: SplitLogWhereInput | SplitLogWhereInput[]
+    id?: StringFilter<"SplitLog"> | string
+    streamId?: StringFilter<"SplitLog"> | string
+    asset?: StringFilter<"SplitLog"> | string
+    amount?: StringFilter<"SplitLog"> | string
+    sender?: StringFilter<"SplitLog"> | string
+    receiver?: StringFilter<"SplitLog"> | string
+    txHash?: StringFilter<"SplitLog"> | string
+    priceUsd?: FloatNullableFilter<"SplitLog"> | number | null
+    priceSource?: StringNullableFilter<"SplitLog"> | string | null
+    priceRecordedAt?: DateTimeNullableFilter<"SplitLog"> | Date | string | null
+    executedAt?: DateTimeFilter<"SplitLog"> | Date | string
+  }
+
+  export type SplitLogOrderByWithRelationInput = {
+    id?: SortOrder
+    streamId?: SortOrder
+    asset?: SortOrder
+    amount?: SortOrder
+    sender?: SortOrder
+    receiver?: SortOrder
+    txHash?: SortOrder
+    priceUsd?: SortOrderInput | SortOrder
+    priceSource?: SortOrderInput | SortOrder
+    priceRecordedAt?: SortOrderInput | SortOrder
+    executedAt?: SortOrder
+  }
+
+  export type SplitLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    txHash?: string
+    AND?: SplitLogWhereInput | SplitLogWhereInput[]
+    OR?: SplitLogWhereInput[]
+    NOT?: SplitLogWhereInput | SplitLogWhereInput[]
+    streamId?: StringFilter<"SplitLog"> | string
+    asset?: StringFilter<"SplitLog"> | string
+    amount?: StringFilter<"SplitLog"> | string
+    sender?: StringFilter<"SplitLog"> | string
+    receiver?: StringFilter<"SplitLog"> | string
+    priceUsd?: FloatNullableFilter<"SplitLog"> | number | null
+    priceSource?: StringNullableFilter<"SplitLog"> | string | null
+    priceRecordedAt?: DateTimeNullableFilter<"SplitLog"> | Date | string | null
+    executedAt?: DateTimeFilter<"SplitLog"> | Date | string
+  }, "id" | "txHash">
+
+  export type SplitLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    streamId?: SortOrder
+    asset?: SortOrder
+    amount?: SortOrder
+    sender?: SortOrder
+    receiver?: SortOrder
+    txHash?: SortOrder
+    priceUsd?: SortOrderInput | SortOrder
+    priceSource?: SortOrderInput | SortOrder
+    priceRecordedAt?: SortOrderInput | SortOrder
+    executedAt?: SortOrder
+    _count?: SplitLogCountOrderByAggregateInput
+    _avg?: SplitLogAvgOrderByAggregateInput
+    _max?: SplitLogMaxOrderByAggregateInput
+    _min?: SplitLogMinOrderByAggregateInput
+    _sum?: SplitLogSumOrderByAggregateInput
+  }
+
+  export type SplitLogScalarWhereWithAggregatesInput = {
+    AND?: SplitLogScalarWhereWithAggregatesInput | SplitLogScalarWhereWithAggregatesInput[]
+    OR?: SplitLogScalarWhereWithAggregatesInput[]
+    NOT?: SplitLogScalarWhereWithAggregatesInput | SplitLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SplitLog"> | string
+    streamId?: StringWithAggregatesFilter<"SplitLog"> | string
+    asset?: StringWithAggregatesFilter<"SplitLog"> | string
+    amount?: StringWithAggregatesFilter<"SplitLog"> | string
+    sender?: StringWithAggregatesFilter<"SplitLog"> | string
+    receiver?: StringWithAggregatesFilter<"SplitLog"> | string
+    txHash?: StringWithAggregatesFilter<"SplitLog"> | string
+    priceUsd?: FloatNullableWithAggregatesFilter<"SplitLog"> | number | null
+    priceSource?: StringNullableWithAggregatesFilter<"SplitLog"> | string | null
+    priceRecordedAt?: DateTimeNullableWithAggregatesFilter<"SplitLog"> | Date | string | null
+    executedAt?: DateTimeWithAggregatesFilter<"SplitLog"> | Date | string
   }
 
   export type StreamCreateInput = {
@@ -31668,6 +33920,167 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PriceHistoryCreateInput = {
+    id?: string
+    asset: string
+    symbol: string
+    priceUsd: number
+    source: string
+    recordedAt?: Date | string
+  }
+
+  export type PriceHistoryUncheckedCreateInput = {
+    id?: string
+    asset: string
+    symbol: string
+    priceUsd: number
+    source: string
+    recordedAt?: Date | string
+  }
+
+  export type PriceHistoryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    asset?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    priceUsd?: FloatFieldUpdateOperationsInput | number
+    source?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PriceHistoryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    asset?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    priceUsd?: FloatFieldUpdateOperationsInput | number
+    source?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PriceHistoryCreateManyInput = {
+    id?: string
+    asset: string
+    symbol: string
+    priceUsd: number
+    source: string
+    recordedAt?: Date | string
+  }
+
+  export type PriceHistoryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    asset?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    priceUsd?: FloatFieldUpdateOperationsInput | number
+    source?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PriceHistoryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    asset?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    priceUsd?: FloatFieldUpdateOperationsInput | number
+    source?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SplitLogCreateInput = {
+    id?: string
+    streamId: string
+    asset: string
+    amount: string
+    sender: string
+    receiver: string
+    txHash: string
+    priceUsd?: number | null
+    priceSource?: string | null
+    priceRecordedAt?: Date | string | null
+    executedAt?: Date | string
+  }
+
+  export type SplitLogUncheckedCreateInput = {
+    id?: string
+    streamId: string
+    asset: string
+    amount: string
+    sender: string
+    receiver: string
+    txHash: string
+    priceUsd?: number | null
+    priceSource?: string | null
+    priceRecordedAt?: Date | string | null
+    executedAt?: Date | string
+  }
+
+  export type SplitLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streamId?: StringFieldUpdateOperationsInput | string
+    asset?: StringFieldUpdateOperationsInput | string
+    amount?: StringFieldUpdateOperationsInput | string
+    sender?: StringFieldUpdateOperationsInput | string
+    receiver?: StringFieldUpdateOperationsInput | string
+    txHash?: StringFieldUpdateOperationsInput | string
+    priceUsd?: NullableFloatFieldUpdateOperationsInput | number | null
+    priceSource?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRecordedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SplitLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streamId?: StringFieldUpdateOperationsInput | string
+    asset?: StringFieldUpdateOperationsInput | string
+    amount?: StringFieldUpdateOperationsInput | string
+    sender?: StringFieldUpdateOperationsInput | string
+    receiver?: StringFieldUpdateOperationsInput | string
+    txHash?: StringFieldUpdateOperationsInput | string
+    priceUsd?: NullableFloatFieldUpdateOperationsInput | number | null
+    priceSource?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRecordedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SplitLogCreateManyInput = {
+    id?: string
+    streamId: string
+    asset: string
+    amount: string
+    sender: string
+    receiver: string
+    txHash: string
+    priceUsd?: number | null
+    priceSource?: string | null
+    priceRecordedAt?: Date | string | null
+    executedAt?: Date | string
+  }
+
+  export type SplitLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streamId?: StringFieldUpdateOperationsInput | string
+    asset?: StringFieldUpdateOperationsInput | string
+    amount?: StringFieldUpdateOperationsInput | string
+    sender?: StringFieldUpdateOperationsInput | string
+    receiver?: StringFieldUpdateOperationsInput | string
+    txHash?: StringFieldUpdateOperationsInput | string
+    priceUsd?: NullableFloatFieldUpdateOperationsInput | number | null
+    priceSource?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRecordedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SplitLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streamId?: StringFieldUpdateOperationsInput | string
+    asset?: StringFieldUpdateOperationsInput | string
+    amount?: StringFieldUpdateOperationsInput | string
+    sender?: StringFieldUpdateOperationsInput | string
+    receiver?: StringFieldUpdateOperationsInput | string
+    txHash?: StringFieldUpdateOperationsInput | string
+    priceUsd?: NullableFloatFieldUpdateOperationsInput | number | null
+    priceSource?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRecordedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -33184,6 +35597,118 @@ export namespace Prisma {
     decimals?: SortOrder
   }
 
+  export type PriceHistoryCountOrderByAggregateInput = {
+    id?: SortOrder
+    asset?: SortOrder
+    symbol?: SortOrder
+    priceUsd?: SortOrder
+    source?: SortOrder
+    recordedAt?: SortOrder
+  }
+
+  export type PriceHistoryAvgOrderByAggregateInput = {
+    priceUsd?: SortOrder
+  }
+
+  export type PriceHistoryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    asset?: SortOrder
+    symbol?: SortOrder
+    priceUsd?: SortOrder
+    source?: SortOrder
+    recordedAt?: SortOrder
+  }
+
+  export type PriceHistoryMinOrderByAggregateInput = {
+    id?: SortOrder
+    asset?: SortOrder
+    symbol?: SortOrder
+    priceUsd?: SortOrder
+    source?: SortOrder
+    recordedAt?: SortOrder
+  }
+
+  export type PriceHistorySumOrderByAggregateInput = {
+    priceUsd?: SortOrder
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type SplitLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    streamId?: SortOrder
+    asset?: SortOrder
+    amount?: SortOrder
+    sender?: SortOrder
+    receiver?: SortOrder
+    txHash?: SortOrder
+    priceUsd?: SortOrder
+    priceSource?: SortOrder
+    priceRecordedAt?: SortOrder
+    executedAt?: SortOrder
+  }
+
+  export type SplitLogAvgOrderByAggregateInput = {
+    priceUsd?: SortOrder
+  }
+
+  export type SplitLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    streamId?: SortOrder
+    asset?: SortOrder
+    amount?: SortOrder
+    sender?: SortOrder
+    receiver?: SortOrder
+    txHash?: SortOrder
+    priceUsd?: SortOrder
+    priceSource?: SortOrder
+    priceRecordedAt?: SortOrder
+    executedAt?: SortOrder
+  }
+
+  export type SplitLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    streamId?: SortOrder
+    asset?: SortOrder
+    amount?: SortOrder
+    sender?: SortOrder
+    receiver?: SortOrder
+    txHash?: SortOrder
+    priceUsd?: SortOrder
+    priceSource?: SortOrder
+    priceRecordedAt?: SortOrder
+    executedAt?: SortOrder
+  }
+
+  export type SplitLogSumOrderByAggregateInput = {
+    priceUsd?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -33323,6 +35848,14 @@ export namespace Prisma {
     upsert?: DisbursementUpsertWithoutRecipientsInput
     connect?: DisbursementWhereUniqueInput
     update?: XOR<XOR<DisbursementUpdateToOneWithWhereWithoutRecipientsInput, DisbursementUpdateWithoutRecipientsInput>, DisbursementUncheckedUpdateWithoutRecipientsInput>
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -33686,6 +36219,22 @@ export namespace Prisma {
     _max?: NestedEnumPayoutStatusFilter<$PrismaModel>
   }
 
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type SplitRecipientCreateWithoutDisbursementInput = {
     id?: string
     recipientAddress: string
@@ -33926,6 +36475,14 @@ export namespace Prisma {
      * @deprecated Use AssetMappingDefaultArgs instead
      */
     export type AssetMappingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = AssetMappingDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use PriceHistoryDefaultArgs instead
+     */
+    export type PriceHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = PriceHistoryDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use SplitLogDefaultArgs instead
+     */
+    export type SplitLogArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = SplitLogDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany
