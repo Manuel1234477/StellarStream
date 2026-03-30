@@ -8,18 +8,38 @@ import streamsRouter from "./streams.routes";
 import yieldRouter from "./yield.routes.js";
 import snapshotRouter from "./snapshot.routes";
 import governanceRouter from "./governance.routes.js";
+import gasTankRouter from "./gas-tank.routes.js";
+import analyticsRouter from "./analytics.routes.js";
+import walletAuthRouter from "./wallet-auth.routes.js";
+import notificationRouter from "./notification-subscription.routes.js";
+import invoiceLinkRouter from "./invoice-link.routes.js";
+import webhooksRouter from "./webhooks.routes.js";
+import cachedStatsRouter from "./cached-stats.routes.js";
+
+import orgMemberRouter from "./org-member.routes.js";
+import assetMappingRouter from "./asset-mapping.routes.js";
 
 const router = Router();
 
-// Register v1 routes
-router.use("/v1", streamsRouter);
-router.use("/v1/yield", yieldRouter);
-router.use("/v1/snapshots", snapshotRouter);
-router.use("/v1", governanceRouter);
+// Sub-routers (mounted relative to /api/v1 in index.ts)
+router.use("/", streamsRouter);
+router.use("/yield", yieldRouter);
+router.use("/snapshots", snapshotRouter);
+router.use("/", governanceRouter);
+router.use("/", gasTankRouter);
+router.use("/analytics", analyticsRouter);
+router.use("/auth", walletAuthRouter);
+router.use("/notifications", notificationRouter);
+router.use("/invoice-links", invoiceLinkRouter);
+router.use("/webhooks", webhooksRouter);
+router.use("/stats", cachedStatsRouter);
+router.use("/", orgMemberRouter);
+router.use("/asset-mapping", assetMappingRouter);
+
 const auditLogService = new AuditLogService();
 
 /**
- * GET /api/audit-log
+ * GET /api/v1/audit-log
  * Returns the last 50 protocol events in chronological order
  * Query params:
  *   - limit: number of events to return (default: 50, max: 100)

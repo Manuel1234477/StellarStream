@@ -126,20 +126,73 @@ exports.Prisma.StreamScalarFieldEnum = {
   id: 'id',
   streamId: 'streamId',
   txHash: 'txHash',
+  version: 'version',
   sender: 'sender',
   receiver: 'receiver',
+  contractId: 'contractId',
   tokenAddress: 'tokenAddress',
   amount: 'amount',
   duration: 'duration',
   status: 'status',
-  withdrawn: 'withdrawn'
+  withdrawn: 'withdrawn',
+  legacy: 'legacy',
+  migrated: 'migrated',
+  isPrivate: 'isPrivate',
+  yieldEnabled: 'yieldEnabled',
+  vaultContractId: 'vaultContractId',
+  vaultShareBalance: 'vaultShareBalance',
+  vaultRatioScale: 'vaultRatioScale',
+  accruedInterest: 'accruedInterest',
+  lastYieldAccrualAt: 'lastYieldAccrualAt',
+  isDust: 'isDust',
+  affiliateId: 'affiliateId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ContractEventScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  contractId: 'contractId',
+  txHash: 'txHash',
+  eventType: 'eventType',
+  eventIndex: 'eventIndex',
+  ledgerSequence: 'ledgerSequence',
+  ledgerClosedAt: 'ledgerClosedAt',
+  topicXdr: 'topicXdr',
+  valueXdr: 'valueXdr',
+  decodedJson: 'decodedJson',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.TokenPriceScalarFieldEnum = {
+  tokenAddress: 'tokenAddress',
+  symbol: 'symbol',
+  decimals: 'decimals',
+  priceUsd: 'priceUsd',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.WebhookScalarFieldEnum = {
   id: 'id',
   url: 'url',
   description: 'description',
+  eventType: 'eventType',
+  secretKey: 'secretKey',
   isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WebhookDeliveryScalarFieldEnum = {
+  id: 'id',
+  webhookId: 'webhookId',
+  eventType: 'eventType',
+  payload: 'payload',
+  status: 'status',
+  attempts: 'attempts',
+  maxRetries: 'maxRetries',
+  nextRetryAt: 'nextRetryAt',
+  lastError: 'lastError',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -154,6 +207,7 @@ exports.Prisma.EventLogScalarFieldEnum = {
   eventType: 'eventType',
   streamId: 'streamId',
   txHash: 'txHash',
+  eventIndex: 'eventIndex',
   ledger: 'ledger',
   ledgerClosedAt: 'ledgerClosedAt',
   sender: 'sender',
@@ -191,15 +245,200 @@ exports.Prisma.StreamArchiveScalarFieldEnum = {
   archivedAt: 'archivedAt'
 };
 
+exports.Prisma.BridgeLogScalarFieldEnum = {
+  id: 'id',
+  bridge: 'bridge',
+  eventType: 'eventType',
+  sourceChain: 'sourceChain',
+  targetChain: 'targetChain',
+  sourceAsset: 'sourceAsset',
+  targetAsset: 'targetAsset',
+  amount: 'amount',
+  sender: 'sender',
+  recipient: 'recipient',
+  txHash: 'txHash',
+  status: 'status',
+  payload: 'payload',
+  landedAt: 'landedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ProposalScalarFieldEnum = {
+  id: 'id',
+  creator: 'creator',
+  description: 'description',
+  quorum: 'quorum',
+  votesFor: 'votesFor',
+  votesAgainst: 'votesAgainst',
+  txHash: 'txHash',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.OrganizationMemberScalarFieldEnum = {
+  id: 'id',
+  orgAddress: 'orgAddress',
+  memberAddress: 'memberAddress',
+  role: 'role',
+  addedBy: 'addedBy',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ApiKeyScalarFieldEnum = {
+  id: 'id',
+  keyHash: 'keyHash',
+  name: 'name',
+  owner: 'owner',
+  rateLimit: 'rateLimit',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  lastUsedAt: 'lastUsedAt'
+};
+
 exports.Prisma.LedgerHashScalarFieldEnum = {
   sequence: 'sequence',
   hash: 'hash',
   createdAt: 'createdAt'
 };
 
+exports.Prisma.NotificationSubscriptionScalarFieldEnum = {
+  id: 'id',
+  stellarAddress: 'stellarAddress',
+  platform: 'platform',
+  webhookUrl: 'webhookUrl',
+  chatId: 'chatId',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.InvoiceLinkScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  sender: 'sender',
+  receiver: 'receiver',
+  amount: 'amount',
+  tokenAddress: 'tokenAddress',
+  duration: 'duration',
+  description: 'description',
+  pdfUrl: 'pdfUrl',
+  xdrParams: 'xdrParams',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AffiliateScalarFieldEnum = {
+  id: 'id',
+  stellarAddress: 'stellarAddress',
+  pendingClaim: 'pendingClaim',
+  totalEarned: 'totalEarned',
+  claimedAt: 'claimedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.GlobalStatsScalarFieldEnum = {
+  id: 'id',
+  tvlUsd: 'tvlUsd',
+  volume24hUsd: 'volume24hUsd',
+  activeStreams: 'activeStreams',
+  totalStreams: 'totalStreams',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TvlSnapshotScalarFieldEnum = {
+  id: 'id',
+  tvlUsd: 'tvlUsd',
+  date: 'date',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AssetScalarFieldEnum = {
+  id: 'id',
+  tokenAddress: 'tokenAddress',
+  homeDomain: 'homeDomain',
+  name: 'name',
+  symbol: 'symbol',
+  imageUrl: 'imageUrl',
+  decimals: 'decimals',
+  isVerified: 'isVerified',
+  lastFetchedAt: 'lastFetchedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AutopilotScheduleScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  frequency: 'frequency',
+  splitConfigId: 'splitConfigId',
+  operatorAddress: 'operatorAddress',
+  minGasTankXlm: 'minGasTankXlm',
+  isActive: 'isActive',
+  lastRun: 'lastRun',
+  lastTxHash: 'lastTxHash',
+  lastError: 'lastError',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AssetConfigScalarFieldEnum = {
+  id: 'id',
+  assetId: 'assetId',
+  symbol: 'symbol',
+  name: 'name',
+  decimals: 'decimals',
+  isVerified: 'isVerified',
+  isVisible: 'isVisible',
+  yieldEnabled: 'yieldEnabled',
+  iconUrl: 'iconUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DisbursementScalarFieldEnum = {
+  id: 'id',
+  senderAddress: 'senderAddress',
+  totalAmount: 'totalAmount',
+  asset: 'asset',
+  txHash: 'txHash',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SplitRecipientScalarFieldEnum = {
+  id: 'id',
+  disbursementId: 'disbursementId',
+  recipientAddress: 'recipientAddress',
+  amount: 'amount',
+  status: 'status'
+};
+
+exports.Prisma.AssetMappingScalarFieldEnum = {
+  id: 'id',
+  stellarAssetId: 'stellarAssetId',
+  symbol: 'symbol',
+  sourceChain: 'sourceChain',
+  sourceContract: 'sourceContract',
+  label: 'label',
+  bridgeProtocol: 'bridgeProtocol',
+  decimals: 'decimals',
+  isNative: 'isNative',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -211,21 +450,63 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
 exports.StreamStatus = exports.$Enums.StreamStatus = {
   ACTIVE: 'ACTIVE',
   PAUSED: 'PAUSED',
   COMPLETED: 'COMPLETED',
-  CANCELED: 'CANCELED'
+  CANCELED: 'CANCELED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.OrgRole = exports.$Enums.OrgRole = {
+  DRAFTER: 'DRAFTER',
+  APPROVER: 'APPROVER',
+  EXECUTOR: 'EXECUTOR'
+};
+
+exports.NotificationPlatform = exports.$Enums.NotificationPlatform = {
+  discord: 'discord',
+  telegram: 'telegram'
+};
+
+exports.PayoutStatus = exports.$Enums.PayoutStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED'
 };
 
 exports.Prisma.ModelName = {
   Stream: 'Stream',
+  ContractEvent: 'ContractEvent',
+  TokenPrice: 'TokenPrice',
   Webhook: 'Webhook',
+  WebhookDelivery: 'WebhookDelivery',
   SyncState: 'SyncState',
   EventLog: 'EventLog',
   StreamSnapshot: 'StreamSnapshot',
-  StreamArchive: 'StreamArchive'
-  LedgerHash: 'LedgerHash'
+  StreamArchive: 'StreamArchive',
+  BridgeLog: 'BridgeLog',
+  Proposal: 'Proposal',
+  OrganizationMember: 'OrganizationMember',
+  ApiKey: 'ApiKey',
+  LedgerHash: 'LedgerHash',
+  NotificationSubscription: 'NotificationSubscription',
+  InvoiceLink: 'InvoiceLink',
+  Affiliate: 'Affiliate',
+  GlobalStats: 'GlobalStats',
+  TvlSnapshot: 'TvlSnapshot',
+  Asset: 'Asset',
+  AutopilotSchedule: 'AutopilotSchedule',
+  AssetConfig: 'AssetConfig',
+  Disbursement: 'Disbursement',
+  SplitRecipient: 'SplitRecipient',
+  AssetMapping: 'AssetMapping'
 };
 
 /**

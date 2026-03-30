@@ -27,10 +27,12 @@ export async function GET(request: NextRequest) {
 
   try {
     // Dynamic import of stellar-sdk to avoid bundling issues
-    const { FederationServer } = await import('stellar-sdk');
+    const { Federation } = await import('@stellar/stellar-sdk');
     
     // Resolve the federation address
-    const record = await FederationServer.resolve(address);
+    const domain = address.split('*')[1];
+    const server = new Federation.Server(`https://${domain}/.well-known/stellar.toml`, domain);
+    const record = await server.resolveAddress(address) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     return NextResponse.json({
       account_id: record.account_id,

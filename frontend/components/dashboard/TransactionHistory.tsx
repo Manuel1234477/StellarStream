@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { DisbursementHistoryCard } from "@/components/dashboard/DisbursementHistoryCard";
+import type { DraftProposal } from "@/app/api/v3/proposals/pending/route";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -36,6 +38,43 @@ const TRANSACTIONS: Transaction[] = [
   { id: "10", date: "2026-02-20T21:55:00Z", type: "Deposit",        asset: "AQUA", amount: 43_670,   status: "Success", from: "0x7b...22fd", to: "0xc2...88b3", hash: "0xyz2...7890" },
   { id: "11", date: "2026-02-20T18:12:00Z", type: "Stream Update",  asset: "USDC", amount: 9_900,    status: "Success", from: "0xc2...88b3", to: "0x9a...f03d", hash: "0xyz3...1234" },
   { id: "12", date: "2026-02-20T11:08:00Z", type: "Withdrawal",     asset: "XLM",  amount: 30_000,   status: "Pending", from: "0x9a...f03d", to: "0x3f...a91c", hash: "0xyz4...5678" },
+];
+
+// ─── Mock Disbursement History ────────────────────────────────────────────────
+// Replace with a real fetch from /api/v3/proposals/history (or equivalent)
+
+const PAST_DISBURSEMENTS: DraftProposal[] = [
+  {
+    id: "hist-001",
+    title: "February Contributor Payroll",
+    drafter: "GABC...7XYZ",
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 28).toISOString(),
+    expiresAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 26).toISOString(),
+    token: "USDC",
+    totalAmount: 18_500,
+    status: "approved",
+    recipients: [
+      { address: "GBTY...8NOP", amount: 8000, token: "USDC", note: "Lead Engineer" },
+      { address: "GCQR...2STU", amount: 6500, token: "USDC", note: "Designer" },
+      { address: "GDZX...4KLM", amount: 4000, token: "USDC", note: "QA" },
+    ],
+  },
+  {
+    id: "hist-002",
+    title: "January DAO Rewards Split",
+    drafter: "GABC...7XYZ",
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 58).toISOString(),
+    expiresAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 56).toISOString(),
+    token: "XLM",
+    totalAmount: 50_000,
+    status: "approved",
+    recipients: [
+      { address: "GBTY...8NOP", amount: 20000, token: "XLM" },
+      { address: "GCQR...2STU", amount: 15000, token: "XLM" },
+      { address: "GDZX...4KLM", amount: 10000, token: "XLM" },
+      { address: "GFGH...9QRS", amount: 5000,  token: "XLM" },
+    ],
+  },
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -79,7 +118,7 @@ function StatusPill({ status }: { status: TxStatus }) {
       border: `1px solid ${s.border}`,
       background: s.bg,
       color: s.color,
-      fontFamily: "'DM Mono', monospace",
+      fontFamily: "'Plus Jakarta Sans', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
       fontSize: 10, letterSpacing: 1.5, textTransform: "uppercase" as const,
       whiteSpace: "nowrap" as const,
     }}>
@@ -106,7 +145,7 @@ function SortTh({ label, sortKey, current, dir, onClick }: {
       onClick={onClick}
       style={{
         padding: "12px 16px",
-        fontFamily: "'DM Mono', monospace",
+        fontFamily: "'Plus Jakarta Sans', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
         fontSize: 9, letterSpacing: 2.5,
         textTransform: "uppercase" as const,
         color: active ? "#00f5ff" : "rgba(255,255,255,0.25)",
@@ -135,7 +174,7 @@ function FilterPill({ label, active, onClick }: { label: string; active: boolean
       border: `1px solid ${active ? "rgba(0,245,255,0.4)" : "rgba(255,255,255,0.08)"}`,
       background: active ? "rgba(0,245,255,0.08)" : "rgba(255,255,255,0.02)",
       color: active ? "#00f5ff" : "rgba(255,255,255,0.3)",
-      fontFamily: "'DM Mono', monospace",
+      fontFamily: "'Plus Jakarta Sans', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
       fontSize: 10, letterSpacing: 1.5, textTransform: "uppercase" as const,
       cursor: "pointer",
       transition: "all .15s",
@@ -192,7 +231,6 @@ export default function TransactionHistory() {
   const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   const KEYFRAMES = `
-    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@300;400;500&display=swap');
     @keyframes pill-pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
     @keyframes row-in { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
     @keyframes fade-in { from{opacity:0} to{opacity:1} }
@@ -218,7 +256,7 @@ export default function TransactionHistory() {
         minHeight: "100vh",
         background: "#06060f",
         padding: "32px 24px",
-        fontFamily: "'DM Mono', monospace",
+        fontFamily: "'Plus Jakarta Sans', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
         animation: "fade-in .4s ease both",
       }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
@@ -229,7 +267,7 @@ export default function TransactionHistory() {
               StellarStream
             </p>
             <h1 style={{
-              fontFamily: "'Syne', sans-serif", fontSize: 32, fontWeight: 800,
+              fontFamily: "'Lato', sans-serif", fontSize: 32, fontWeight: 800,
               color: "#fff", letterSpacing: -1, lineHeight: 1,
             }}>
               Transaction History
@@ -255,11 +293,23 @@ export default function TransactionHistory() {
                 <span style={{ fontSize: 9, letterSpacing: 2, color: "rgba(255,255,255,0.3)", textTransform: "uppercase" }}>
                   {label}{" "}
                 </span>
-                <span style={{ fontSize: 14, fontFamily: "'Syne', sans-serif", fontWeight: 700, color: color ?? "#fff" }}>
+                <span style={{ fontSize: 14, fontFamily: "'Lato', sans-serif", fontWeight: 700, color: color ?? "#fff" }}>
                   {value}
                 </span>
               </div>
             ))}
+          </div>
+
+          {/* ── Disbursement History ── */}
+          <div style={{ marginBottom: 32 }}>
+            <p style={{ fontSize: 10, letterSpacing: 3, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", marginBottom: 12 }}>
+              Past Disbursements
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 12 }}>
+              {PAST_DISBURSEMENTS.map((d) => (
+                <DisbursementHistoryCard key={d.id} proposal={d} />
+              ))}
+            </div>
           </div>
 
           {/* ── Glass card ── */}
@@ -295,7 +345,7 @@ export default function TransactionHistory() {
                   border: "1px solid rgba(255,255,255,0.08)",
                   borderRadius: 10, padding: "7px 12px",
                   color: "#fff", fontSize: 11, letterSpacing: 0.5,
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: "'Plus Jakarta Sans', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
                 }}
               />
 
@@ -323,8 +373,8 @@ export default function TransactionHistory() {
                     <SortTh label="Type"   sortKey="type"   current={sortKey} dir={sortDir} onClick={() => handleSort("type")} />
                     <SortTh label="Amount" sortKey="amount" current={sortKey} dir={sortDir} onClick={() => handleSort("amount")} />
                     <SortTh label="Status" sortKey="status" current={sortKey} dir={sortDir} onClick={() => handleSort("status")} />
-                    <th style={{ padding: "12px 16px", fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", textAlign: "left", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>From → To</th>
-                    <th style={{ padding: "12px 16px", fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", textAlign: "left", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>Tx Hash</th>
+                    <th style={{ padding: "12px 16px", fontFamily: "'Plus Jakarta Sans', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace", fontSize: 9, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", textAlign: "left", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>From → To</th>
+                    <th style={{ padding: "12px 16px", fontFamily: "'Plus Jakarta Sans', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace", fontSize: 9, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", textAlign: "left", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>Tx Hash</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -370,7 +420,7 @@ export default function TransactionHistory() {
 
                       {/* Amount */}
                       <td style={{ padding: "14px 16px", whiteSpace: "nowrap" }}>
-                        <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 13, color: "#fff" }}>
+                        <span style={{ fontFamily: "'Lato', sans-serif", fontWeight: 700, fontSize: 13, color: "#fff" }}>
                           {fmtAmount(tx.amount, tx.asset)}
                         </span>
                       </td>
@@ -431,7 +481,7 @@ export default function TransactionHistory() {
                     background: "rgba(255,255,255,0.02)",
                     color: "rgba(255,255,255,0.4)",
                     fontSize: 11, cursor: "pointer",
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: "'Plus Jakarta Sans', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
                   }}
                 >
                   ← Prev
@@ -447,7 +497,7 @@ export default function TransactionHistory() {
                       background: p === page ? "rgba(0,245,255,0.08)" : "rgba(255,255,255,0.02)",
                       color: p === page ? "#00f5ff" : "rgba(255,255,255,0.3)",
                       fontSize: 11, cursor: "pointer",
-                      fontFamily: "'DM Mono', monospace",
+                      fontFamily: "'Plus Jakarta Sans', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
                     }}
                   >
                     {p}
@@ -463,7 +513,7 @@ export default function TransactionHistory() {
                     background: "rgba(255,255,255,0.02)",
                     color: "rgba(255,255,255,0.4)",
                     fontSize: 11, cursor: "pointer",
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: "'Plus Jakarta Sans', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
                   }}
                 >
                   Next →

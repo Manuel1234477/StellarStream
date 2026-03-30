@@ -23,6 +23,10 @@ const exportStreamsParamsSchema = z.object({
   address: stellarAddressSchema,
 });
 
+const verifyStreamParamsSchema = z.object({
+  streamId: z.string().min(1),
+});
+
 const getStreamsQuerySchema = z.object({
   direction: z.enum(["inbound", "outbound"]).optional(),
   status: z.enum(["active", "paused", "completed"]).optional(),
@@ -321,5 +325,33 @@ function toCsv(rows: ExportRow[]): string {
 
   return `${header.join(",")}\n${lines.join("\n")}\n`;
 }
+
+/**
+ * GET /api/v1/streams/verify/:streamId
+ * Verifies a stream by fetching its events from the blockchain
+ */
+router.get(
+  "/streams/verify/:streamId",
+  validateRequest({
+    params: verifyStreamParamsSchema,
+  }),
+  asyncHandler(async (req: Request, res: Response) => {
+    const { streamId } = req.params;
+
+    const verificationData = await streamService.verifyStream(streamId);
+
+    if (!verificationData) {
+      return res.status(404).json({
+        success: false,
+        error: "Stream not found or verification failed",
+      });
+    }
+
+    res.json({
+      success: true,
+      data: verificationData,
+    });
+  })
+);
 
 export default router;
