@@ -16,6 +16,9 @@ import { LoadProposalDataButton } from "@/components/load-proposal-data-button";
 import { HighContrastGrid } from "@/components/high-contrast-grid";
 import { useWallet } from "@/lib/wallet-context";
 import { Horizon } from "@stellar/stellar-sdk";
+import { Server } from "@stellar/stellar-sdk";
+import { SimulationWaterfall } from "@/components/dashboard/simulation-waterfall";
+import { buildSimulationWaterfall } from "@/lib/simulation-waterfall";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface FormData {
@@ -425,7 +428,7 @@ function StreamSplitter({
   const handleProposalLoaded = (recipients: Array<{ address: string; percentage: number }>) => {
     try {
       setProposalError(null);
-      
+
       if (recipients.length === 0) {
         setProposalError("No recipients found in proposal");
         return;
@@ -433,7 +436,7 @@ function StreamSplitter({
 
       // For now, use the first recipient (can be extended for multi-recipient support)
       const primaryRecipient = recipients[0];
-      
+
       if (!isValidStellarAddress(primaryRecipient.address)) {
         setProposalError("Proposal contains invalid recipient address");
         return;
@@ -1033,6 +1036,10 @@ function Step3({
   const ratePerSec = calcRatePerSecond(form.totalAmount, durationSeconds);
   const displayRate = calcDisplayRate(ratePerSec, form.rateType);
   const endDate = durationSeconds > 0 ? new Date(Date.now() + durationSeconds * 1000) : null;
+  const totalAmount = parseFloat(form.totalAmount) || 0;
+  const protocolFee = totalAmount * 0.003;
+  const networkFee = Math.max(0.00001, totalAmount * 0.0001);
+  const recipientAmount = Math.max(0, totalAmount - protocolFee - networkFee);
 
   const claimableRecipients = Object.values(recipientValidation).filter((status) =>
     status === "missing_trustline" || status === "account_not_funded"
@@ -1049,7 +1056,7 @@ function Step3({
         ? `${form.recipientLabel} · ${form.recipientAddress.slice(0, 10)}…`
         : `${form.recipientAddress.slice(0, 14)}…`
     },
-    { label: "Total", value: `${fmt(parseFloat(form.totalAmount) || 0)} ${form.asset}` },
+    { label: "Total", value: `${fmt(totalAmount || 0)} ${form.asset}` },
     { label: "Rate", value: `${fmt(displayRate)} ${form.asset} ${RATE_LABELS[form.rateType]}` },
     { label: "Duration", value: form.durationPreset },
     { label: "End Date", value: endDate ? fmtDate(endDate) : "—" },
@@ -1061,6 +1068,20 @@ function Step3({
       { label: "Privacy", value: "🔐 P25 Privacy Shield Enabled", accent: true },
     ] : []),
   ];
+  const simulation = buildSimulationWaterfall({
+    senderLabel: "Connected Wallet",
+    protocolLabel: "StellarStream Router",
+    totalAmount,
+    protocolFee,
+    networkFee,
+    recipients: [
+      {
+        address: form.recipientAddress || "recipient",
+        label: form.recipientLabel || "Recipient",
+        amount: recipientAmount,
+      },
+    ],
+  });
 
   return (
     <div className="space-y-5">
@@ -1091,6 +1112,11 @@ function Step3({
         ))}
       </div>
 
+      <SimulationWaterfall
+        asset={form.asset}
+        summary={simulation}
+        description="A step-by-step preview of how the signed transaction distributes funds, including estimated protocol and network fees."
+      />
       <div className="flex gap-3 rounded-2xl border border-orange-400/20 bg-orange-400/[0.05] px-4 py-3">
         <span className="text-orange-400 text-sm flex-shrink-0 mt-0.5">⚠</span>
         <p className="font-body text-xs text-orange-300/70 leading-relaxed">
@@ -1432,7 +1458,7 @@ export default function CreateStreamPage() {
     // Get hardware wallet timeout configuration
     const { timeoutMs, isHardwareWallet, isLargeTransaction } = getTimeout();
     const timeoutSeconds = Math.ceil(timeoutMs / 1000);
-    
+
     // Prepare transaction for signing (shows modal if needed)
     const mockXdrTransaction = btoa("mock-transaction-xdr-data");
     prepareForSigning(mockXdrTransaction);

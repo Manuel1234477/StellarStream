@@ -40,6 +40,7 @@ model Stream {
 
   @@index([sender])
   @@index([receiver])
+  @@index([status])
   @@index([streamId])
   @@index([contractId])
   @@index([legacy])
@@ -472,6 +473,24 @@ model PriceHistory {
 
   @@index([asset, recordedAt])
   @@index([recordedAt])
+}
+
+// Aggregated dust-loss report per asset across all protocol versions (Issue #179)
+model ProtocolInefficiencyReport {
+  id               String   @id @default(cuid())
+  asset            String   // Token address / asset identifier
+  protocolVersion  Int      @map("protocol_version") // 1, 2, 3…
+  totalDustAmount  String   @map("total_dust_amount") // Cumulative dust (stroops)
+  eventCount       Int      @default(0) @map("event_count")
+  firstSeenLedger  Int?     @map("first_seen_ledger")
+  lastSeenLedger   Int?     @map("last_seen_ledger")
+  generatedAt      DateTime @default(now()) @map("generated_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@unique([asset, protocolVersion])
+  @@index([asset])
+  @@index([protocolVersion])
+  @@map("protocol_inefficiency_report")
 }
 
 // Log of payment splits with linked USD price at time of split
