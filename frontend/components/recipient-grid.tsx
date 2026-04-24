@@ -5,6 +5,7 @@
 // Adds a Memo column (type + value) to the recipient grid with validation.
 
 import { useState, useCallback } from "react";
+import { AlertTriangle } from "lucide-react";
 import type { MemoType } from "@/lib/bulk-splitter/types";
 
 export interface RecipientRow {
@@ -72,9 +73,11 @@ interface Props {
   /** Controlled rows — pass [] to start empty */
   rows: RecipientRow[];
   onChange: (rows: RecipientRow[]) => void;
+  /** Addresses flagged by the trustline preflight check */
+  invalidTrustlineAddresses?: Set<string>;
 }
 
-export function RecipientGrid({ rows, onChange }: Props) {
+export function RecipientGrid({ rows, onChange, invalidTrustlineAddresses }: Props) {
   const update = useCallback(
     (id: string, patch: Partial<RecipientRow>) => {
       onChange(
@@ -161,12 +164,24 @@ export function RecipientGrid({ rows, onChange }: Props) {
           <div key={row.id} className="space-y-1">
             <div className="grid grid-cols-[1fr_100px_90px_120px_24px] gap-2 items-center">
               {/* Address */}
-              <input
-                value={row.address}
-                onChange={(e) => update(row.id, { address: e.target.value })}
-                placeholder="G… or *stellar.org"
-                className="rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-xs text-white/80 placeholder-white/20 focus:border-cyan-400/50 focus:outline-none font-mono"
-              />
+              <div className="relative">
+                <input
+                  value={row.address}
+                  onChange={(e) => update(row.id, { address: e.target.value })}
+                  placeholder="G… or *stellar.org"
+                  className={`w-full rounded-lg border px-3 py-1.5 text-xs text-white/80 placeholder-white/20 focus:outline-none font-mono transition-colors ${
+                    invalidTrustlineAddresses?.has(row.address)
+                      ? "border-amber-400/50 bg-amber-400/[0.05] focus:border-amber-400"
+                      : "border-white/[0.08] bg-white/[0.04] focus:border-cyan-400/50"
+                  }`}
+                />
+                {invalidTrustlineAddresses?.has(row.address) && (
+                  <AlertTriangle
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-amber-400"
+                    aria-label="Missing trustline"
+                  />
+                )}
+              </div>
               {/* Amount */}
               <input
                 value={row.amount}
