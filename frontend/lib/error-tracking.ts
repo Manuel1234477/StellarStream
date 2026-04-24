@@ -9,7 +9,7 @@ export function initErrorTracking() {
     return;
   }
 
-  if (Sentry.getCurrentHub().getClient()) {
+  if (Sentry.getClient()) {
     return;
   }
 
@@ -18,7 +18,6 @@ export function initErrorTracking() {
     environment: process.env.NODE_ENV,
     release: RELEASE,
     tracesSampleRate: 0.25,
-    autoSessionTracking: true,
   });
 
   window.addEventListener("error", (event) => {

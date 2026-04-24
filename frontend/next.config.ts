@@ -62,7 +62,7 @@ const nextConfig: NextConfig = {
       },
       // Public SVG / WebP / AVIF assets
       {
-        source: "/:path*\\.(?:svg|webp|avif|png|jpg|jpeg|ico|woff2|woff)",
+        source: "/:path*.(svg|webp|avif|png|jpg|jpeg|ico|woff2|woff)",
         headers: [
           {
             key: "Cache-Control",
@@ -85,6 +85,8 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+  },
+
   compiler: {
     // Strip console.log in production; keep console.error and console.warn
     removeConsole: process.env.NODE_ENV === "production"

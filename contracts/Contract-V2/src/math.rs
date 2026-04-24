@@ -7,6 +7,71 @@ use crate::contracterror::Error;
 
 pub const SCALE: i128 = 10_000_000; // 10^7
 
+/// Nanoseconds per second.
+///
+/// All internal time arithmetic uses nanoseconds so that the calculation engine
+/// is forward-compatible with `ledger().timestamp_nanos()` once the Soroban SDK
+/// exposes it. Until then, callers multiply `ledger().timestamp()` by this
+/// constant to convert seconds → nanoseconds before passing to `calculate_flow`
+/// or `calculate_unlocked_internal`.
+pub const NANOS_PER_SEC: u64 = 1_000_000_000;
+
+/// Compute `floor(total * elapsed / duration)` using `FixedPoint::mul_div` for
+/// overflow-safe intermediate arithmetic.
+///
+/// Both `elapsed` and `duration` must be in the **same** unit (e.g. both in
+/// nanoseconds). Returns 0 on any degenerate input and falls back to plain
+/// integer division if the mul_div intermediate overflows (preserving
+/// correctness at the cost of truncation precision).
+pub fn calculate_flow(total: i128, duration: i128, elapsed: i128) -> i128 {
+    if duration <= 0 || elapsed <= 0 {
+        return 0;
+    }
+    if elapsed >= duration {
+        return total;
+    }
+    // Primary path: intermediate precision via mul_div.
+    match FixedPoint::mul_div(total, elapsed, duration) {
+        Ok(v) => v,
+        // Overflow path: fall back to plain division (still correct, just no
+        // extra precision from the SCALE trick).
+        Err(_) => total / duration * elapsed,
+    }
+}
+
+/// Compute `floor(total * (elapsed / duration)^2)` for exponential (back-loaded)
+/// streams.
+///
+/// Uses the identity `total * elapsed^2 / duration^2` with overflow-safe
+/// intermediate arithmetic:
+///   1. Compute `ratio = elapsed * SCALE / duration`  (scaled fraction, ≤ SCALE)
+///   2. Compute `ratio^2 / SCALE`                     (squared fraction, ≤ SCALE)
+///   3. Compute `total * ratio_sq / SCALE`            (final amount)
+///
+/// Because `ratio ≤ SCALE = 10^7`, `ratio^2 ≤ 10^14` which fits comfortably
+/// in i128 (max ~1.7 × 10^38). Returns 0 on degenerate input.
+pub fn calculate_exponential_unlocked(total: i128, duration: i128, elapsed: i128) -> i128 {
+    if duration <= 0 || elapsed <= 0 || total <= 0 {
+        return 0;
+    }
+    if elapsed >= duration {
+        return total;
+    }
+    // ratio = elapsed / duration, scaled by SCALE (≤ SCALE = 10^7)
+    let ratio = match elapsed.checked_mul(SCALE) {
+        Some(v) => v / duration,
+        None => {
+            // elapsed * SCALE overflowed — fall back to plain integer path
+            // (still correct, just loses sub-unit precision)
+            return total / duration / duration * elapsed * elapsed;
+        }
+    };
+    // ratio_sq = ratio^2 / SCALE  (still ≤ SCALE)
+    let ratio_sq = ratio * ratio / SCALE;
+    // result = total * ratio_sq / SCALE
+    total * ratio_sq / SCALE
+}
+
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct FixedPoint(pub i128);
 
@@ -89,6 +154,41 @@ impl FixedPoint {
 mod tests {
     use super::*;
 
+    // ── calculate_flow ───────────────────────────────────────────────────────
+
+    #[test]
+    fn test_calculate_flow_halfway() {
+        // 50 % elapsed → exactly half the total
+        assert_eq!(calculate_flow(1_000_000, 200, 100), 500_000);
+    }
+
+    #[test]
+    fn test_calculate_flow_zero_elapsed() {
+        assert_eq!(calculate_flow(1_000_000, 200, 0), 0);
+    }
+
+    #[test]
+    fn test_calculate_flow_full_duration() {
+        // elapsed >= duration → full total
+        assert_eq!(calculate_flow(1_000_000, 200, 200), 1_000_000);
+        assert_eq!(calculate_flow(1_000_000, 200, 300), 1_000_000);
+    }
+
+    #[test]
+    fn test_calculate_flow_degenerate_duration() {
+        assert_eq!(calculate_flow(1_000_000, 0, 100), 0);
+        assert_eq!(calculate_flow(1_000_000, -1, 100), 0);
+    }
+
+    #[test]
+    fn test_calculate_flow_nanos_precision() {
+        // Simulate nanosecond inputs: 1.5 seconds elapsed out of 3 seconds
+        let total = 1_000_000_i128;
+        let duration = 3 * NANOS_PER_SEC as i128;
+        let elapsed = (NANOS_PER_SEC / 2 * 3) as i128; // 1.5 s in nanos
+        assert_eq!(calculate_flow(total, duration, elapsed), 500_000);
+    }
+
     // ── mul_div ──────────────────────────────────────────────────────────────
 
     #[test]
@@ -162,5 +262,51 @@ mod tests {
         let a = FixedPoint::from_amount(10);
         let b = FixedPoint::from_raw(0);
         assert_eq!(a.checked_div(b), Err(Error::Overflow));
+    }
+
+    // ── calculate_exponential_unlocked ───────────────────────────────────────
+
+    #[test]
+    fn test_exponential_zero_elapsed() {
+        assert_eq!(calculate_exponential_unlocked(1_000_000, 100, 0), 0);
+    }
+
+    #[test]
+    fn test_exponential_full_duration() {
+        assert_eq!(calculate_exponential_unlocked(1_000_000, 100, 100), 1_000_000);
+        assert_eq!(calculate_exponential_unlocked(1_000_000, 100, 200), 1_000_000);
+    }
+
+    #[test]
+    fn test_exponential_halfway_is_quarter() {
+        // At 50% elapsed: (0.5)^2 = 0.25 → 25% of total
+        let result = calculate_exponential_unlocked(1_000_000, 100, 50);
+        assert_eq!(result, 250_000);
+    }
+
+    #[test]
+    fn test_exponential_quarter_elapsed() {
+        // At 25% elapsed: (0.25)^2 = 0.0625 → 6.25% of total
+        let result = calculate_exponential_unlocked(1_000_000, 100, 25);
+        assert_eq!(result, 62_500);
+    }
+
+    #[test]
+    fn test_exponential_back_loaded_vs_linear() {
+        // Exponential should always be ≤ linear for elapsed < duration
+        let total = 1_000_000_i128;
+        let duration = 100_i128;
+        for t in 1..100 {
+            let exp = calculate_exponential_unlocked(total, duration, t);
+            let lin = calculate_flow(total, duration, t);
+            assert!(exp <= lin, "t={t}: exp={exp} > lin={lin}");
+        }
+    }
+
+    #[test]
+    fn test_exponential_degenerate_inputs() {
+        assert_eq!(calculate_exponential_unlocked(0, 100, 50), 0);
+        assert_eq!(calculate_exponential_unlocked(1_000_000, 0, 50), 0);
+        assert_eq!(calculate_exponential_unlocked(1_000_000, 100, -1), 0);
     }
 }
