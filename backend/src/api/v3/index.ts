@@ -5,6 +5,7 @@ import { draftRateLimitMiddleware } from "../../middleware/draftRateLimit.js";
 import { requireAuth } from "../../middleware/requireAuth.js";
 import { idempotencyMiddleware } from "../../middleware/idempotency.js";
 import disbursementFileRouter from "./disbursement-file.routes.js";
+import publicVerifyPaymentRouter from "./public-verify-payment.routes.js";
 import safeVaultRouter from "./safe-vault.routes.js";
 import historyRouter from "./history.routes.js";
 import invoiceReportRouter from "./invoice-report.routes.js";
@@ -13,10 +14,13 @@ import exportRouter from "./export.routes.js";
 import splitAnalyzeRouter from "./split-analyze.routes.js";
 import splitExpandRouter from "./split-expand.routes.js";
 import webhooksRouter from "./webhooks.routes.js";
+import feeBumpRouter from "./fee-bump.routes.js";
+import draftVersionsRouter from "./draft-versions.routes.js";
 
 const router = Router();
 
 router.use(responseWrapper);
+router.use(publicVerifyPaymentRouter);
 // All V3 endpoints require a valid API key.
 router.use(requireAuth);
 
@@ -38,5 +42,7 @@ router.use(exportRouter);
 router.use(splitAnalyzeRouter);
 router.use(splitExpandRouter);
 router.use(webhooksRouter);
+router.use(feeBumpRouter);
+router.use(draftVersionsRouter);
 
 export default router;

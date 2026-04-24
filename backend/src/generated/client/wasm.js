@@ -214,6 +214,8 @@ exports.Prisma.EventLogScalarFieldEnum = {
   receiver: 'receiver',
   amount: 'amount',
   metadata: 'metadata',
+  parentHash: 'parentHash',
+  entryHash: 'entryHash',
   createdAt: 'createdAt'
 };
 
@@ -351,6 +353,15 @@ exports.Prisma.GlobalStatsScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.GlobalStats_V3ScalarFieldEnum = {
+  id: 'id',
+  totalVolumeUsd: 'totalVolumeUsd',
+  dailyVolumeUsd: 'dailyVolumeUsd',
+  totalSplits: 'totalSplits',
+  totalRecipients: 'totalRecipients',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.TvlSnapshotScalarFieldEnum = {
   id: 'id',
   tvlUsd: 'tvlUsd',
@@ -441,6 +452,18 @@ exports.Prisma.PriceHistoryScalarFieldEnum = {
   recordedAt: 'recordedAt'
 };
 
+exports.Prisma.ProtocolInefficiencyReportScalarFieldEnum = {
+  id: 'id',
+  asset: 'asset',
+  protocolVersion: 'protocolVersion',
+  totalDustAmount: 'totalDustAmount',
+  eventCount: 'eventCount',
+  firstSeenLedger: 'firstSeenLedger',
+  lastSeenLedger: 'lastSeenLedger',
+  generatedAt: 'generatedAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SplitLogScalarFieldEnum = {
   id: 'id',
   streamId: 'streamId',
@@ -453,6 +476,46 @@ exports.Prisma.SplitLogScalarFieldEnum = {
   priceSource: 'priceSource',
   priceRecordedAt: 'priceRecordedAt',
   executedAt: 'executedAt'
+};
+
+exports.Prisma.MonitoredTransactionScalarFieldEnum = {
+  id: 'id',
+  txHash: 'txHash',
+  txXdr: 'txXdr',
+  sourceAddress: 'sourceAddress',
+  originalFeeSt: 'originalFeeSt',
+  currentFeeSt: 'currentFeeSt',
+  bumpCount: 'bumpCount',
+  maxBumps: 'maxBumps',
+  status: 'status',
+  submittedAt: 'submittedAt',
+  confirmedAt: 'confirmedAt',
+  lastBumpAt: 'lastBumpAt',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DisbursementDraftScalarFieldEnum = {
+  id: 'id',
+  senderAddress: 'senderAddress',
+  name: 'name',
+  asset: 'asset',
+  currentVersion: 'currentVersion',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DisbursementDraftVersionScalarFieldEnum = {
+  id: 'id',
+  draftId: 'draftId',
+  version: 'version',
+  totalAmount: 'totalAmount',
+  recipients: 'recipients',
+  changeNote: 'changeNote',
+  changedBy: 'changedBy',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -523,6 +586,7 @@ exports.Prisma.ModelName = {
   InvoiceLink: 'InvoiceLink',
   Affiliate: 'Affiliate',
   GlobalStats: 'GlobalStats',
+  GlobalStats_V3: 'GlobalStats_V3',
   TvlSnapshot: 'TvlSnapshot',
   Asset: 'Asset',
   AutopilotSchedule: 'AutopilotSchedule',
@@ -531,7 +595,11 @@ exports.Prisma.ModelName = {
   SplitRecipient: 'SplitRecipient',
   AssetMapping: 'AssetMapping',
   PriceHistory: 'PriceHistory',
-  SplitLog: 'SplitLog'
+  ProtocolInefficiencyReport: 'ProtocolInefficiencyReport',
+  SplitLog: 'SplitLog',
+  MonitoredTransaction: 'MonitoredTransaction',
+  DisbursementDraft: 'DisbursementDraft',
+  DisbursementDraftVersion: 'DisbursementDraftVersion'
 };
 
 /**
