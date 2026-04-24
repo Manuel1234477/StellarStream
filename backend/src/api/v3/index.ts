@@ -16,6 +16,8 @@ import splitExpandRouter from "./split-expand.routes.js";
 import webhooksRouter from "./webhooks.routes.js";
 import feeBumpRouter from "./fee-bump.routes.js";
 import draftVersionsRouter from "./draft-versions.routes.js";
+import assetPriceRouter from "./asset-price.routes.js";
+import backfillRouter from "./backfill.routes.js";
 
 const router = Router();
 
@@ -44,5 +46,7 @@ router.use(splitExpandRouter);
 router.use(webhooksRouter);
 router.use(feeBumpRouter);
 router.use(draftVersionsRouter);
+router.use(assetPriceRouter);
+router.use(backfillRouter);
 
 export default router;

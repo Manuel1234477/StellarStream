@@ -18,6 +18,7 @@ import webhooksRouter from "./webhooks.routes.js";
 import cachedStatsRouter from "./cached-stats.routes.js";
 
 import orgMemberRouter from "./org-member.routes.js";
+import orgMemberSyncRouter from "./org-member-sync.routes.js";
 import assetMappingRouter from "./asset-mapping.routes.js";
 import dustAuditRouter from "./dust-audit.routes.js";
 
@@ -36,6 +37,7 @@ router.use("/invoice-links", invoiceLinkRouter);
 router.use("/webhooks", webhooksRouter);
 router.use("/stats", cachedStatsRouter);
 router.use("/", orgMemberRouter);
+router.use("/", orgMemberSyncRouter);
 router.use("/asset-mapping", assetMappingRouter);
 router.use("/dust-audit", dustAuditRouter);
 
